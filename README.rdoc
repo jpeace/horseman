@@ -1,0 +1,3 @@
+= Horseman
+
+Headless HTTP crawler/scraper for web application built with ASP.NET WebForms.
