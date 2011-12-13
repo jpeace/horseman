@@ -6,7 +6,7 @@ Echoe.new("horseman", "0.0.1") do |p|
   p.description     = "Headless HTTP crawler/scraper for ASP.NET WebForms applications"  
   p.url             = "http://jarrodpeace.com"  
   p.author          = "Jarrod Peace"  
-  p.email           = "peace.jarrod@yahoo.com"  
+  p.email           = "peace.jarrod@gmail.com"  
   p.ignore_pattern  = FileList[".gitignore"]  
   p.development_dependencies = []  
 end  
@@ -19,4 +19,5 @@ task :default => :spec
 
 desc "Run specs"
 RSpec::Core::RakeTask.new do |t|
+  t.rspec_opts = '-cfd'
 end

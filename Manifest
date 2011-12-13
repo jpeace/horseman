@@ -3,6 +3,13 @@ Gemfile.lock
 Manifest
 README.rdoc
 Rakefile
+horseman.gemspec
 lib/horseman.rb
+lib/horseman/connection.rb
+lib/horseman/cookie.rb
 lib/horseman/hidden_fields.rb
+lib/horseman/version.rb
+spec/connection_spec.rb
+spec/cookie_spec.rb
 spec/hidden_fields_spec.rb
+spec/spec_helper.rb
