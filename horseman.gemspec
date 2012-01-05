@@ -6,11 +6,11 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jarrod Peace"]
-  s.date = "2011-12-13"
+  s.date = "2011-12-21"
   s.description = "Headless HTTP crawler/scraper for ASP.NET WebForms applications"
   s.email = "peace.jarrod@gmail.com"
-  s.extra_rdoc_files = ["README.rdoc", "lib/horseman.rb", "lib/horseman/cookie.rb", "lib/horseman/hidden_fields.rb", "lib/horseman/version.rb"]
-  s.files = ["Gemfile", "Gemfile.lock", "Manifest", "README.rdoc", "Rakefile", "horseman.gemspec", "lib/horseman.rb", "lib/horseman/cookie.rb", "lib/horseman/hidden_fields.rb", "lib/horseman/version.rb", "spec/cookie_spec.rb", "spec/hidden_fields_spec.rb"]
+  s.extra_rdoc_files = ["README.rdoc", "lib/horseman.rb", "lib/horseman/connection.rb", "lib/horseman/cookie.rb", "lib/horseman/hidden_fields.rb", "lib/horseman/version.rb"]
+  s.files = ["Gemfile", "Gemfile.lock", "Manifest", "README.rdoc", "Rakefile", "horseman.gemspec", "lib/horseman.rb", "lib/horseman/connection.rb", "lib/horseman/cookie.rb", "lib/horseman/hidden_fields.rb", "lib/horseman/version.rb", "spec/connection_spec.rb", "spec/cookie_spec.rb", "spec/hidden_fields_spec.rb", "spec/spec_helper.rb"]
   s.homepage = "http://jarrodpeace.com"
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Horseman", "--main", "README.rdoc"]
   s.require_paths = ["lib"]
