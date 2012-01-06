@@ -28,7 +28,7 @@ module Horseman
   
   class Cookies
     def initialize
-      @dict = {}
+      clear
     end
     
     def [](cookie_name)
@@ -37,6 +37,10 @@ module Horseman
     
     def get(cookie_name)
       return @dict[cookie_name]
+    end
+    
+    def clear
+      @dict = {}
     end
     
     def count

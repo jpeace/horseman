@@ -6,13 +6,18 @@ module Horseman
   class Connection
     attr_reader :http
 
-    def initialize(url)
+    def url=(url)
       @uri = URI.parse(url)
       build_http
     end
-   
-    def build_request(verb=:get, form=nil)
-      verb == :get ? build_get_request : build_post_request(form)
+
+    def exec_request(request)
+      @http.request(request)
+    end
+       
+    def build_request(options={})
+      self.url = options[:url] unless options[:url].nil?
+      options[:verb] == (:get || nil) ? build_get_request : build_post_request(options[:form])
     end
     
     private
