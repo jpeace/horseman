@@ -11,6 +11,10 @@ module Mocks
             <input type="text" name="name1" value="value1" />
             <input type="submit" value="OK" />
           </form>
+          <form id="form2">
+            <input type="text" name="name2" value="value2" />
+            <input type="submit" value="OK" />
+          </form>
         </body>
       </html>
     }

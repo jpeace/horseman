@@ -21,15 +21,15 @@ describe Horseman::Browser do
     subject.get!
   end
   
-  it "stores information about the last response" do
-    subject.get!
-    subject.last_response.body.should eq html
-  end
-  
   it "empties the cookies when the session is cleared" do
     subject.get!
     subject.cookies.should_not be_empty
     subject.clear_session
     subject.cookies.should be_empty
   end
+  
+  it "stores information about the last response" do
+    subject.get!
+    subject.last_response.body.should eq html
+  end  
 end
