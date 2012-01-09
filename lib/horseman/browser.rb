@@ -1,3 +1,5 @@
+require 'horseman/connection'
+require 'horseman/cookies'
 require 'horseman/response'
 require 'securerandom'
 
@@ -6,11 +8,15 @@ module Horseman
     attr_accessor :base_url
     attr_reader :cookies, :connection, :last_response, :multipart_boundary
     
+    def self.from_base_url(base_url)
+      Horseman::Browser.new(Horseman::Connection.new, base_url)
+    end
+    
     def initialize(connection, base_url='')
       @connection = connection
       @base_url = base_url
       @cookies = Horseman::Cookies.new
-      @multipart_boundary = "----HorsemanBoundary#{SecureRandom.base64(8)}"
+      @multipart_boundary = "----HorsemanBoundary#{SecureRandom.hex(8)}"
     end
     
     def clear_session
@@ -31,7 +37,20 @@ module Horseman
         data[f.name.to_sym] ||= f.value
       end
       request_body = build_request_body(data, selected_form.encoding)
-      request = @connection.build_request(:url => "#{@base_url}#{path}", :verb => :post, :body => request_body)
+      
+      if selected_form.action[/\w+:\/\/.*/]
+        # Absolute action http://www.example.com/action
+        url = selected_form.action
+      elsif selected_form.action == ''
+        # No action, post to same URL as GET request
+        url = "#{base_url}#{path}"
+      else
+        # Relative action, reuse scheme and host from GET request
+        uri = URI.parse("#{base_url}#{path}")
+        url = "#{uri.scheme}://#{uri.host}#{selected_form.action}"
+      end
+      
+      request = @connection.build_request(:url => "#{url}", :verb => :post, :body => request_body)
       request['Content-Type'] = case selected_form.encoding
                                 when :multipart
                                   "multipart/form-data; boundary=#{@multipart_boundary}"
@@ -57,7 +76,7 @@ module Horseman
             Content-Disposition: form-data; name="#{k}"
             
             #{v}}
-        end.join("\n") + @multipart_boundary
+        end.join("\n") + "\n#{@multipart_boundary}"
       else
         data.map {|k,v| "#{k}=#{v}"}.join('&')
       end

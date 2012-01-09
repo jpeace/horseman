@@ -70,6 +70,8 @@
 
   <ul class="link-list">
     
+    <li><a href="#method-c-from_base_url">::from_base_url</a>
+    
     <li><a href="#method-c-new">::new</a>
     
     <li><a href="#method-i-clear_session">#clear_session</a>
@@ -220,6 +222,36 @@
       <h3 class="section-header">Public Class Methods</h3>
 
     
+      <div id="method-c-from_base_url" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">from_base_url</span><span
+            class="method-args">(base_url)</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="from_base_url-source">
+            <pre><span class="ruby-comment"># File lib/horseman/browser.rb, line 11</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">from_base_url</span>(<span class="ruby-identifier">base_url</span>)
+  <span class="ruby-constant">Horseman</span><span class="ruby-operator">::</span><span class="ruby-constant">Browser</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">Horseman</span><span class="ruby-operator">::</span><span class="ruby-constant">Connection</span>.<span class="ruby-identifier">new</span>, <span class="ruby-identifier">base_url</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- from_base_url-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- from_base_url-method -->
+
+    
       <div id="method-c-new" class="method-detail ">
         
         <div class="method-heading">
@@ -236,12 +268,12 @@
 
           
           <div class="method-source-code" id="new-source">
-            <pre><span class="ruby-comment"># File lib/horseman/browser.rb, line 9</span>
+            <pre><span class="ruby-comment"># File lib/horseman/browser.rb, line 15</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">connection</span>, <span class="ruby-identifier">base_url</span>=<span class="ruby-string">''</span>)
   <span class="ruby-ivar">@connection</span> = <span class="ruby-identifier">connection</span>
   <span class="ruby-ivar">@base_url</span> = <span class="ruby-identifier">base_url</span>
   <span class="ruby-ivar">@cookies</span> = <span class="ruby-constant">Horseman</span><span class="ruby-operator">::</span><span class="ruby-constant">Cookies</span>.<span class="ruby-identifier">new</span>
-  <span class="ruby-ivar">@multipart_boundary</span> = <span class="ruby-node">&quot;----HorsemanBoundary#{SecureRandom.base64(8)}&quot;</span>
+  <span class="ruby-ivar">@multipart_boundary</span> = <span class="ruby-node">&quot;----HorsemanBoundary#{SecureRandom.hex(8)}&quot;</span>
 <span class="ruby-keyword">end</span></pre>
           </div><!-- new-source -->
           
@@ -275,7 +307,7 @@
 
           
           <div class="method-source-code" id="clear_session-source">
-            <pre><span class="ruby-comment"># File lib/horseman/browser.rb, line 16</span>
+            <pre><span class="ruby-comment"># File lib/horseman/browser.rb, line 22</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">clear_session</span>
   <span class="ruby-ivar">@cookies</span>.<span class="ruby-identifier">clear</span>
 <span class="ruby-keyword">end</span></pre>
@@ -305,7 +337,7 @@
 
           
           <div class="method-source-code" id="get-21-source">
-            <pre><span class="ruby-comment"># File lib/horseman/browser.rb, line 20</span>
+            <pre><span class="ruby-comment"># File lib/horseman/browser.rb, line 26</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">get!</span>(<span class="ruby-identifier">path</span> = <span class="ruby-string">'/'</span>)
   <span class="ruby-identifier">request</span> = <span class="ruby-ivar">@connection</span>.<span class="ruby-identifier">build_request</span>(<span class="ruby-value">:url</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-node">&quot;#{@base_url}#{path}&quot;</span>, <span class="ruby-value">:verb</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">:get</span>)
   <span class="ruby-identifier">exec</span> <span class="ruby-identifier">request</span>
@@ -336,7 +368,7 @@
 
           
           <div class="method-source-code" id="post-21-source">
-            <pre><span class="ruby-comment"># File lib/horseman/browser.rb, line 25</span>
+            <pre><span class="ruby-comment"># File lib/horseman/browser.rb, line 31</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">post!</span>(<span class="ruby-identifier">path</span> = <span class="ruby-string">'/'</span>, <span class="ruby-identifier">form</span> = <span class="ruby-value">:form</span>, <span class="ruby-identifier">data</span> = {})
   <span class="ruby-identifier">get!</span> <span class="ruby-identifier">path</span>
   <span class="ruby-identifier">selected_form</span> = <span class="ruby-ivar">@last_response</span>.<span class="ruby-identifier">forms</span>.<span class="ruby-identifier">select</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-identifier">f</span>.<span class="ruby-identifier">id</span>.<span class="ruby-identifier">to_sym</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">form</span>}.<span class="ruby-identifier">first</span>
@@ -346,7 +378,20 @@
     <span class="ruby-identifier">data</span>[<span class="ruby-identifier">f</span>.<span class="ruby-identifier">name</span>.<span class="ruby-identifier">to_sym</span>] <span class="ruby-operator">||=</span> <span class="ruby-identifier">f</span>.<span class="ruby-identifier">value</span>
   <span class="ruby-keyword">end</span>
   <span class="ruby-identifier">request_body</span> = <span class="ruby-identifier">build_request_body</span>(<span class="ruby-identifier">data</span>, <span class="ruby-identifier">selected_form</span>.<span class="ruby-identifier">encoding</span>)
-  <span class="ruby-identifier">request</span> = <span class="ruby-ivar">@connection</span>.<span class="ruby-identifier">build_request</span>(<span class="ruby-value">:url</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-node">&quot;#{@base_url}#{path}&quot;</span>, <span class="ruby-value">:verb</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">:post</span>, <span class="ruby-value">:body</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">request_body</span>)
+  
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">selected_form</span>.<span class="ruby-identifier">action</span>[<span class="ruby-regexp">/\w+:\/\/.*/</span>]
+    <span class="ruby-comment"># Absolute action http://www.example.com/action</span>
+    <span class="ruby-identifier">url</span> = <span class="ruby-identifier">selected_form</span>.<span class="ruby-identifier">action</span>
+  <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">selected_form</span>.<span class="ruby-identifier">action</span> <span class="ruby-operator">==</span> <span class="ruby-string">''</span>
+    <span class="ruby-comment"># No action, post to same URL as GET request</span>
+    <span class="ruby-identifier">url</span> = <span class="ruby-node">&quot;#{base_url}#{path}&quot;</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-comment"># Relative action, reuse scheme and host from GET request</span>
+    <span class="ruby-identifier">uri</span> = <span class="ruby-constant">URI</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-node">&quot;#{base_url}#{path}&quot;</span>)
+    <span class="ruby-identifier">url</span> = <span class="ruby-node">&quot;#{uri.scheme}://#{uri.host}#{selected_form.action}&quot;</span>
+  <span class="ruby-keyword">end</span>
+  
+  <span class="ruby-identifier">request</span> = <span class="ruby-ivar">@connection</span>.<span class="ruby-identifier">build_request</span>(<span class="ruby-value">:url</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-node">&quot;#{url}&quot;</span>, <span class="ruby-value">:verb</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">:post</span>, <span class="ruby-value">:body</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">request_body</span>)
   <span class="ruby-identifier">request</span>[<span class="ruby-string">'Content-Type'</span>] = <span class="ruby-keyword">case</span> <span class="ruby-identifier">selected_form</span>.<span class="ruby-identifier">encoding</span>
                             <span class="ruby-keyword">when</span> <span class="ruby-value">:multipart</span>
                               <span class="ruby-node">&quot;multipart/form-data; boundary=#{@multipart_boundary}&quot;</span>

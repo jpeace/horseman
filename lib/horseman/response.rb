@@ -9,7 +9,7 @@ module Horseman
     end
   end
   class Form < Element
-    attr_accessor :encoding, :fields, :submit
+    attr_accessor :action, :encoding, :fields, :submit
   end
   class FormField < Element
     attr_accessor :type, :value
@@ -42,17 +42,16 @@ module Horseman
       doc = Nokogiri::HTML(@body)
       doc.css('form').each do |f|
         form = Form.new(f.attr('id'), f.attr('name'))
+        form.action = f.attr('action') || '/'
         form.encoding = @encoding_types[f.attr('enctype')] || :url
         form.fields = []
         f.css('input').each do |i|
           field = FormField.new(i.attr('id'), i.attr('name'))
           field.type = @field_types[i.attr('type')] || :text
           field.value = i.attr('value')
-          if (field.type == :submit)
-            form.submit = field
-          elsif
-            form.fields << field 
-          end
+
+          form.fields << field 
+          form.submit = field if (field.type == :submit)  
         end
         @forms << form
       end

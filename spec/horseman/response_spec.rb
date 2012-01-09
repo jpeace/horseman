@@ -6,13 +6,20 @@ describe Horseman::Response do
   subject { described_class.new(html) }
   
   it "parses forms" do
-    subject.forms.count.should eq 2
+    subject.forms.count.should eq 3
+
     subject.forms[0].id.should eq 'form1'
+    subject.forms[0].action.should eq '/action'
+
     subject.forms[1].id.should eq 'form2'
+    subject.forms[1].action.should eq 'http://www.anotherdomain.com/action'
+    
+    subject.forms[2].id.should eq 'form3'
+    subject.forms[2].action.should eq ''
   end
   
   it "parses form fields" do
-    subject.forms[0].fields.count.should eq 3
+    subject.forms[0].fields.count.should eq 4
 
     subject.forms[0].fields[0].name.should eq 'text'
     subject.forms[0].fields[0].type.should eq :text

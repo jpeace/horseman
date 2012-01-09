@@ -34,7 +34,17 @@ describe Horseman::Browser do
   end
   
   context "when posting" do
-    def with_request
+    def describe_url
+      count = 0
+      subject.connection.should_receive(:build_request).twice do |options|
+        yield options[:url] if (count > 0)
+        count += 1
+        request
+      end
+      post
+    end
+    
+    def describe_request
       subject.connection.should_receive(:exec_request).twice do |request|
         if (request.method == "POST")
           yield request
@@ -47,19 +57,55 @@ describe Horseman::Browser do
       expect { subject.post!('/', :bad_form) }.to raise_error
     end
     
+    context "with a relative action" do
+      def post
+        subject.post!('/path', :form1)
+      end
+      
+      it "constructs the correct URL" do
+        describe_url do |url|
+          url.should eq 'http://www.example.com/action'
+        end
+      end
+    end
+    
+    context "with an absolute action" do
+      def post
+        subject.post!('/path', :form2)
+      end
+      
+      it "constructs the correct URL" do
+        describe_url do |url|
+          url.should eq 'http://www.anotherdomain.com/action'
+        end
+      end
+    end
+    
+    context "with no action" do
+      def post
+        subject.post!('/path', :form3)
+      end
+      
+      it "constructs the correct URL" do
+        describe_url do |url|
+          url.should eq 'http://www.example.com/path'
+        end
+      end
+    end
+    
     context "multipart data" do
       def post
-        subject.post!('/action', :form1, {:text => "text_value", :check => "checkbox_value"})
+        subject.post!('/', :form1, {:text => "text_value", :check => "checkbox_value"})
       end
       
       it "properly sets content type" do
-        with_request do |request|
+        describe_request do |request|
           request['Content-Type'].should eq "multipart/form-data; boundary=#{subject.multipart_boundary}"
         end
       end
       
       it "properly encodes form data" do
-        with_request do |request|
+        describe_request do |request|
           request.body.should match /^#{subject.multipart_boundary}.*#{subject.multipart_boundary}$/m
           request.body.should match /#{subject.multipart_boundary}.*Content-Disposition: form-data; name="text".*text_value/m
           request.body.should match /#{subject.multipart_boundary}.*Content-Disposition: form-data; name="check".*checkbox_value/m
@@ -69,17 +115,17 @@ describe Horseman::Browser do
 
     context "URL encoded data" do
       def post
-        subject.post!('/action', :form2, {:text1 => "value1", :text2 => "value2"})
+        subject.post!('/', :form2, {:text1 => "value1", :text2 => "value2"})
       end
     
       it "properly sets content type" do
-        with_request do |request|
+        describe_request do |request|
           request['Content-Type'].should eq 'application/x-www-form-urlencoded'
         end
       end
       
       it "properly encodes form data" do
-        with_request do |request|
+        describe_request do |request|
           request.body.should match /\w+=\w+&\w+=\w+/
           request.body.should match /text1=value1/
           request.body.should match /text2=value2/
