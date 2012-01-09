@@ -31,5 +31,60 @@ describe Horseman::Browser do
   it "stores information about the last response" do
     subject.get!
     subject.last_response.body.should eq html
-  end  
+  end
+  
+  context "when posting" do
+    def with_request
+      subject.connection.should_receive(:exec_request).twice do |request|
+        if (request.method == "POST")
+          yield request
+        end
+      end
+      post
+    end
+    
+    it "raises an exception on invalid form id" do
+      expect { subject.post!('/', :bad_form) }.to raise_error
+    end
+    
+    context "multipart data" do
+      def post
+        subject.post!('/action', :form1, {:text => "text_value", :check => "checkbox_value"})
+      end
+      
+      it "properly sets content type" do
+        with_request do |request|
+          request['Content-Type'].should eq "multipart/form-data; boundary=#{subject.multipart_boundary}"
+        end
+      end
+      
+      it "properly encodes form data" do
+        with_request do |request|
+          request.body.should match /^#{subject.multipart_boundary}.*#{subject.multipart_boundary}$/m
+          request.body.should match /#{subject.multipart_boundary}.*Content-Disposition: form-data; name="text".*text_value/m
+          request.body.should match /#{subject.multipart_boundary}.*Content-Disposition: form-data; name="check".*checkbox_value/m
+        end
+      end
+    end
+
+    context "URL encoded data" do
+      def post
+        subject.post!('/action', :form2, {:text1 => "value1", :text2 => "value2"})
+      end
+    
+      it "properly sets content type" do
+        with_request do |request|
+          request['Content-Type'].should eq 'application/x-www-form-urlencoded'
+        end
+      end
+      
+      it "properly encodes form data" do
+        with_request do |request|
+          request.body.should match /\w+=\w+&\w+=\w+/
+          request.body.should match /text1=value1/
+          request.body.should match /text2=value2/
+        end
+      end
+    end
+  end
 end

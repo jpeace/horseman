@@ -16,20 +16,20 @@ describe Horseman::Connection do
     end
     
     context "using GET" do
-      it "uses the proper request type" do
-        request.class.should be Net::HTTP::Get
+      it "uses the proper method" do
+        request.method.should eq "GET"
       end
     end
     
     context "using POST" do
       let(:request) {subject.build_request(:verb => :post)}
       
-      it "uses the proper request type" do
-        request.class.should be Net::HTTP::Post
+      it "uses the proper method" do
+        request.method.should eq "POST"
       end
 
       context "with form data" do
-        let(:request) {subject.build_request(:verb => :post, :form => {:field1=>'value1', :field2=>'value2'})}
+        let(:request) {subject.build_request(:verb => :post, :body => "field1=value1&field2=value2")}
         
         it "properly sets request body" do
           request.body.should eq 'field1=value1&field2=value2'

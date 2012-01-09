@@ -7,13 +7,16 @@ module Mocks
       <html>
         <head></head>
         <body>
-          <form id="form1">
-            <input type="text" name="name1" value="value1" />
-            <input type="submit" value="OK" />
+          <form id="form1" enctype="multipart/form-data" action="action">
+            <input type="text" name="text" value="value1" />
+            <input type="checkbox" name="check" value="value2" />
+            <input type="hidden" name="hidden" value="value3" />
+            <input type="submit" name="submit1" value="OK" />
           </form>
-          <form id="form2">
-            <input type="text" name="name2" value="value2" />
-            <input type="submit" value="OK" />
+          <form id="form2" action="http://www.example.com/action">
+            <input type="text" name="text1" />
+            <input type="text" name="text2" />
+            <input type="submit" name="submit2" value="OK" />
           </form>
         </body>
       </html>
@@ -44,7 +47,8 @@ module Mocks
   end
   
   def connection
-    Horseman::Connection.any_instance.stub(:exec_request) { response }
-    Horseman::Connection.new
+    c = Horseman::Connection.new
+    c.stub(:exec_request) { response }
+    c
   end
 end

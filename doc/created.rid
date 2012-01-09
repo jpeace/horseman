@@ -1,0 +1,8 @@
+Mon, 09 Jan 2012 16:19:50 -0600
+README.rdoc	Mon, 09 Jan 2012 11:45:07 -0600
+lib/horseman.rb	Wed, 30 Nov 2011 21:41:01 -0600
+lib/horseman/browser.rb	Mon, 09 Jan 2012 16:14:38 -0600
+lib/horseman/connection.rb	Mon, 09 Jan 2012 13:00:24 -0600
+lib/horseman/cookies.rb	Thu, 05 Jan 2012 19:02:27 -0600
+lib/horseman/response.rb	Mon, 09 Jan 2012 11:55:04 -0600
+lib/horseman/version.rb	Wed, 30 Nov 2011 21:40:23 -0600

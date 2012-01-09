@@ -17,7 +17,7 @@ module Horseman
        
     def build_request(options={})
       self.url = options[:url] unless options[:url].nil?
-      options[:verb] == (:get || nil) ? build_get_request : build_post_request(options[:form])
+      options[:verb] == (:get || nil) ? build_get_request : build_post_request(options[:body])
     end
     
     private
@@ -33,9 +33,9 @@ module Horseman
       return Net::HTTP::Get.new(@uri.request_uri)
     end
     
-    def build_post_request(form)
+    def build_post_request(body)
       ret = Net::HTTP::Post.new(@uri.request_uri)
-      ret.form_data = form unless form.nil?
+      ret.body = body
       return ret
     end
   end

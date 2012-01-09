@@ -3,7 +3,7 @@ require 'rspec/core/rake_task'
 require 'echoe'
   
 Echoe.new("horseman", "0.0.1") do |p|  
-  p.description     = "Headless HTTP crawler/scraper for ASP.NET WebForms applications"  
+  p.description     = "Headless HTTP crawler/scraper"  
   p.url             = "http://jarrodpeace.com"  
   p.author          = "Jarrod Peace"  
   p.email           = "peace.jarrod@gmail.com"  
