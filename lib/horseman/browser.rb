@@ -4,7 +4,9 @@ require 'horseman/response'
 require 'securerandom'
 
 module Horseman
-  class Browser
+  class Browser    
+    MaxRedirects = 10
+    
     attr_accessor :base_url
     attr_reader :cookies, :connection, :last_response, :multipart_boundary
     
@@ -68,11 +70,11 @@ module Horseman
       request['cookie'] = @cookies.to_s
       response = @connection.exec_request(request)
       
-      pp response.code
       @cookies.update(response.get_fields('set-cookie'))
       @last_response = Horseman::Response.new(response.body)
 
-      if response.code == '301'
+      if ['301','302','303','307'].include? response.code
+        raise "Redirect limit reached" if redirects >= MaxRedirects
         get!(response['location'], :redirects => redirects+1, :no_base_url => true)
       end
     end

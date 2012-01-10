@@ -32,31 +32,65 @@ describe Horseman::Browser do
     subject.get!
     subject.last_response.body.should eq html
   end
-  
-  it "follows redirects" do
-    r = response
+
+  context "when processing redirects" do
     
-    redirected = false
-    r.should_receive(:code) do
-      code = (redirected) ? '200' : '301'
-      redirected = true
-      code
-    end
-    c = connection
-    c.stub(:exec_request) {r}
-    b = described_class.new(c, 'http://www.example.com')
-    
-    redirects = 0
-    c.should_receive(:build_request).twice do |options|
-      if redirects > 0
-        options[:url].should eq 'http://www.anotherdomain.com/path'
+    def build_browser(code, num_redirects)
+      r = response
+      redirects = 0
+      r.stub(:code) do
+        code = (redirects >= num_redirects) ? '200' : code
+        redirects += 1
+        code
       end
-      redirects += 1
-      request
+      
+      c = connection
+      c.stub(:exec_request) { r }
+
+      b = described_class.new(c, 'http://www.example.com')
+      
+      b
     end
-    b.get!
+    
+    def should_redirect_for_code(code)
+      browser = build_browser(code, 1)
+
+      redirects = 0
+      browser.connection.should_receive(:build_request).twice do |options|
+        if redirects > 0
+          options[:url].should eq 'http://www.anotherdomain.com/path'
+        end
+        redirects += 1
+        request
+      end
+      browser.get!
+    end
+    
+    it "follows 301s" do
+      should_redirect_for_code('301')
+    end
+    
+    it "follows 302s" do
+      should_redirect_for_code('302')
+    end
+    
+    it "follows 303s" do
+      should_redirect_for_code('303')
+    end
+    
+    it "follows 307s" do
+      should_redirect_for_code('307')
+    end
+    
+    it "raises an error after 10 consecutive redirects" do
+      good_browser = build_browser('301', 10)
+      good_browser.get!
+      
+      bad_browser = build_browser('301', 11)
+      expect { bad_browser.get! }.to raise_error
+    end
   end
-  
+    
   context "when posting" do
     def describe_url
       count = 0
@@ -77,7 +111,7 @@ describe Horseman::Browser do
       post
     end
     
-    it "raises an exception on invalid form id" do
+    it "raises an error on invalid form id" do
       expect { subject.post!('/', :bad_form) }.to raise_error
     end
     
