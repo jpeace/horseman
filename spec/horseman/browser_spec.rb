@@ -33,6 +33,30 @@ describe Horseman::Browser do
     subject.last_response.body.should eq html
   end
   
+  it "follows redirects" do
+    r = response
+    
+    redirected = false
+    r.should_receive(:code) do
+      code = (redirected) ? '200' : '301'
+      redirected = true
+      code
+    end
+    c = connection
+    c.stub(:exec_request) {r}
+    b = described_class.new(c, 'http://www.example.com')
+    
+    redirects = 0
+    c.should_receive(:build_request).twice do |options|
+      if redirects > 0
+        options[:url].should eq 'http://www.anotherdomain.com/path'
+      end
+      redirects += 1
+      request
+    end
+    b.get!
+  end
+  
   context "when posting" do
     def describe_url
       count = 0

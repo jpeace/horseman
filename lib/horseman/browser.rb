@@ -8,7 +8,7 @@ module Horseman
     attr_accessor :base_url
     attr_reader :cookies, :connection, :last_response, :multipart_boundary
     
-    def self.from_base_url(base_url)
+    def self.with_base_url(base_url)
       Horseman::Browser.new(Horseman::Connection.new, base_url)
     end
     
@@ -23,15 +23,17 @@ module Horseman
       @cookies.clear
     end
     
-    def get!(path = '/')
-      request = @connection.build_request(:url => "#{@base_url}#{path}", :verb => :get)
-      exec request
+    def get!(path = '/', options = {})
+      url = options[:no_base_url] ? path : "#{@base_url}#{path}"
+      request = @connection.build_request(:url => url, :verb => :get)
+      redirects = options[:redirects] || 0
+      exec(request, redirects)
     end
     
     def post!(path = '/', form = :form, data = {})
       get! path
       selected_form = @last_response.forms.select {|f| f.id.to_sym == form}.first
-      raise "Could not find form #{:form}" if selected_form.nil?
+      raise "Could not find form #{form}" if selected_form.nil?
 
       selected_form.fields.each do |f|
         data[f.name.to_sym] ||= f.value
@@ -62,11 +64,17 @@ module Horseman
     
     private
     
-    def exec(request)
+    def exec(request, redirects=0)
       request['cookie'] = @cookies.to_s
       response = @connection.exec_request(request)
+      
+      pp response.code
       @cookies.update(response.get_fields('set-cookie'))
       @last_response = Horseman::Response.new(response.body)
+
+      if response.code == '301'
+        get!(response['location'], :redirects => redirects+1, :no_base_url => true)
+      end
     end
     
     def build_request_body(data, encoding=:url)

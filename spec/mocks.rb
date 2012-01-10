@@ -31,27 +31,30 @@ module Mocks
   end
   
   def request
-    m = double("HttpRequest")
-    m.stub(:[]=) {}
-    m
+    r = double("HttpRequest")
+    r.stub(:[]=) {}
+    r
   end
   
   def response
-    m = double("HttpResponse")
-    m.stub(:[]) do |key|
+    r = double("HttpResponse")
+    r.stub(:code) { '200' }
+    r.stub(:[]) do |key|
       case key
       when 'set-cookie'
         cookies.join(', ')
+      when 'location'
+        'http://www.anotherdomain.com/path'
       end
     end
-    m.stub(:get_fields) do |key|
+    r.stub(:get_fields) do |key|
       case key
       when 'set-cookie'
         cookies
       end
     end
-    m.stub(:body) { html }
-    m
+    r.stub(:body) { html }
+    r
   end
   
   def connection
