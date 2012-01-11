@@ -77,16 +77,12 @@ module Horseman
       request['Content-Length'] = request.body ? request.body.length : 0
       request['User-Agent'] = 'Horseman'
       
-      request.each_header {|k,v| puts "#{k}: #{v}"}
-      puts request.body
-      
       response = @connection.exec_request(request)
       
       @cookies.update(response.get_fields('set-cookie'))
       @last_action = Horseman::Action.new(@connection.uri, response)
 
       code = response.code
-      puts code
       
       if ['301','302','303','307'].include? code
         raise "Redirect limit reached" if redirects >= MaxRedirects
@@ -95,7 +91,6 @@ module Horseman
         if !is_absolute_url(redirect_url)
           redirect_url = "#{@last_action.relative_root}#{redirect_url}"
         end
-        puts redirect_url
         get!(redirect_url, :redirects => redirects+1, :no_base_url => true)
       end
     end

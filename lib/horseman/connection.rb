@@ -18,7 +18,7 @@ module Horseman
     def build_request(options={})
       self.url = options[:url] unless options[:url].nil?
       
-      puts "#{(options[:verb] || :get).to_s.upcase} #{options[:url] || 'none given'}"
+      #puts "#{(options[:verb] || :get).to_s.upcase} #{options[:url] || 'none given'}"
       options[:verb] == (:get || nil) ? build_get_request : build_post_request(options[:body])
     end
     
