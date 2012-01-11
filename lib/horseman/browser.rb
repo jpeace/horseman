@@ -32,13 +32,18 @@ module Horseman
       exec(request, redirects)
     end
     
-    def post!(path = '/', form = :form, data = {})
+    def post!(path = '/', options = {})
       get! path
+      
+      form = options[:form] || :form
+      data = options[:data] || {}
+      unchecked = options[:unchecked] || []
+      
       selected_form = @last_action.response.forms.select {|f| f.id && f.id.to_sym == form}.first
       raise "Could not find form #{form}" if selected_form.nil?
 
       selected_form.fields.each do |f|
-        data[f.name.to_sym] ||= f.value
+        data[f.name.to_sym] ||= f.value unless unchecked.include? f.name.to_sym
       end
       request_body = build_request_body(data, selected_form.encoding)
       

@@ -120,12 +120,12 @@ describe Horseman::Browser do
     end
     
     it "raises an error on invalid form id" do
-      expect { subject.post!('/', :bad_form) }.to raise_error
+      expect { subject.post!('/', :form => :bad_form) }.to raise_error
     end
     
     context "with a relative action" do
       def post
-        subject.post!('/path', :form1)
+        subject.post!('/path', :form => :form1)
       end
       
       it "constructs the correct URL" do
@@ -137,7 +137,7 @@ describe Horseman::Browser do
     
     context "with an absolute action" do
       def post
-        subject.post!('/path', :form2)
+        subject.post!('/path', :form => :form2)
       end
       
       it "constructs the correct URL" do
@@ -149,7 +149,7 @@ describe Horseman::Browser do
     
     context "with no action" do
       def post
-        subject.post!('/path', :form3)
+        subject.post!('/path', :form => :form3)
       end
       
       it "constructs the correct URL" do
@@ -159,9 +159,21 @@ describe Horseman::Browser do
       end
     end
     
+    context "with unchecked checkboxes" do
+      def post
+        subject.post!('/path', :form => :form1, :data => {:text => "text_value"}, :unchecked => [:check])
+      end
+      
+      it "does not include unchecked checkboxes" do
+        describe_request do |request|
+          request.body.should_not match /name="check"/
+        end
+      end
+    end
+  
     context "multipart data" do
       def post
-        subject.post!('/', :form1, {:text => "text_value", :check => "checkbox_value"})
+        subject.post!('/', :form => :form1, :data => {:text => "text_value", :check => "checkbox_value"})
       end
       
       it "properly sets content type" do
@@ -181,7 +193,7 @@ describe Horseman::Browser do
 
     context "URL encoded data" do
       def post
-        subject.post!('/', :form2, {:text1 => "value1", :text2 => "value2"})
+        subject.post!('/', :form => :form2, :data => {:text1 => "value1", :text2 => "value2"})
       end
     
       it "properly sets content type" do
