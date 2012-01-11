@@ -5,11 +5,13 @@ README.rdoc
 Rakefile
 horseman.gemspec
 lib/horseman.rb
+lib/horseman/action.rb
 lib/horseman/browser.rb
 lib/horseman/connection.rb
 lib/horseman/cookies.rb
 lib/horseman/response.rb
 lib/horseman/version.rb
+spec/horseman/action_spec.rb
 spec/horseman/browser_spec.rb
 spec/horseman/connection_spec.rb
 spec/horseman/cookies_spec.rb

@@ -72,6 +72,8 @@
     
     <li><a href="#method-c-new">::new</a>
     
+    <li><a href="#method-i-5B-5D">#[]</a>
+    
   </ul>
 </nav>
 
@@ -94,6 +96,8 @@
   <ul class="link-list">
   
     <li><a href="../Horseman.html">Horseman</a>
+  
+    <li><a href="../Horseman/Action.html">Horseman::Action</a>
   
     <li><a href="../Horseman/Browser.html">Horseman::Browser</a>
   
@@ -166,6 +170,19 @@
         </div>
       </div>
       
+      <div id="attribute-i-headers" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">headers</span><span
+            class="attribute-access-type">[R]</span>
+        </div>
+
+        <div class="method-description">
+        
+        
+        
+        </div>
+      </div>
+      
     </section><!-- attribute-method-details -->
     
 
@@ -179,7 +196,7 @@
         
         <div class="method-heading">
           <span class="method-name">new</span><span
-            class="method-args">(body)</span>
+            class="method-args">(body, headers={})</span>
           <span class="method-click-advice">click to toggle source</span>
         </div>
         
@@ -192,8 +209,9 @@
           
           <div class="method-source-code" id="new-source">
             <pre><span class="ruby-comment"># File lib/horseman/response.rb, line 21</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">body</span>)
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">body</span>, <span class="ruby-identifier">headers</span>={})
   <span class="ruby-ivar">@body</span> = <span class="ruby-identifier">body</span>
+  <span class="ruby-ivar">@headers</span> = <span class="ruby-identifier">headers</span>
   <span class="ruby-ivar">@forms</span> = []
   
   <span class="ruby-ivar">@field_types</span> = {
@@ -220,6 +238,42 @@
 
     
     </section><!-- public-class-method-details -->
+  
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section section">
+      <h3 class="section-header">Public Instance Methods</h3>
+
+    
+      <div id="method-i-5B-5D" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">[]</span><span
+            class="method-args">(key)</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="5B-5D-source">
+            <pre><span class="ruby-comment"># File lib/horseman/response.rb, line 40</span>
+<span class="ruby-keyword">def</span><span class="ruby-operator">[]</span>(<span class="ruby-identifier">key</span>)
+  <span class="ruby-ivar">@headers</span>[<span class="ruby-identifier">key</span>]
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- 5B-5D-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- 5B-5D-method -->
+
+    
+    </section><!-- public-instance-method-details -->
   
   </section><!-- 5Buntitled-5D -->
 

@@ -99,6 +99,8 @@
   
     <li><a href="../Horseman.html">Horseman</a>
   
+    <li><a href="../Horseman/Action.html">Horseman::Action</a>
+  
     <li><a href="../Horseman/Browser.html">Horseman::Browser</a>
   
     <li><a href="../Horseman/Connection.html">Horseman::Connection</a>
@@ -157,6 +159,19 @@
         </div>
       </div>
       
+      <div id="attribute-i-uri" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">uri</span><span
+            class="attribute-access-type">[R]</span>
+        </div>
+
+        <div class="method-description">
+        
+        
+        
+        </div>
+      </div>
+      
     </section><!-- attribute-method-details -->
     
 
@@ -185,6 +200,8 @@
             <pre><span class="ruby-comment"># File lib/horseman/connection.rb, line 18</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">build_request</span>(<span class="ruby-identifier">options</span>={})
   <span class="ruby-keyword">self</span>.<span class="ruby-identifier">url</span> = <span class="ruby-identifier">options</span>[<span class="ruby-value">:url</span>] <span class="ruby-keyword">unless</span> <span class="ruby-identifier">options</span>[<span class="ruby-value">:url</span>].<span class="ruby-identifier">nil?</span>
+  
+  <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;#{(options[:verb] || :get).to_s.upcase} #{options[:url] || 'none given'}&quot;</span>
   <span class="ruby-identifier">options</span>[<span class="ruby-value">:verb</span>] <span class="ruby-operator">==</span> (<span class="ruby-value">:get</span> <span class="ruby-operator">||</span> <span class="ruby-keyword">nil</span>) <span class="ruby-operator">?</span> <span class="ruby-identifier">build_get_request</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">build_post_request</span>(<span class="ruby-identifier">options</span>[<span class="ruby-value">:body</span>])
 <span class="ruby-keyword">end</span></pre>
           </div><!-- build_request-source -->
