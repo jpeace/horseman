@@ -7,7 +7,7 @@ module Mocks
       <html>
         <head></head>
         <body>
-          <form id="form1" enctype="multipart/form-data" action="/action">
+          <form id="form1" enctype="multipart/form-data" action="action">
             <input type="text" name="text" value="value1" />
             <input type="checkbox" name="check" value="value2" />
             <input type="hidden" name="hidden" value="value3" />
@@ -36,7 +36,7 @@ module Mocks
     r
   end
   
-  def response
+  def response(options={})
     r = double("HttpResponse")
     r.stub(:code) { '200' }
     r.stub(:[]) do |key|
@@ -44,7 +44,7 @@ module Mocks
       when 'set-cookie'
         cookies.join(', ')
       when 'location'
-        'http://www.anotherdomain.com/path'
+        options[:location] || 'http://www.anotherdomain.com/path'
       end
     end
     r.stub(:get_fields) do |key|

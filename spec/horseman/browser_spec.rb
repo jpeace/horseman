@@ -30,13 +30,16 @@ describe Horseman::Browser do
   
   it "stores information about the last response" do
     subject.get!
-    subject.last_response.body.should eq html
+    subject.last_action.response.body.should eq html
   end
 
   context "when processing redirects" do
     
-    def build_browser(code, num_redirects)
-      r = response
+    def build_browser(options)
+      code = options[:code] || '200'
+      num_redirects = options[:redirects] || 1
+      location = options[:location]
+      r = response(:location => location)
       redirects = 0
       r.stub(:code) do
         code = (redirects >= num_redirects) ? '200' : code
@@ -47,18 +50,18 @@ describe Horseman::Browser do
       c = connection
       c.stub(:exec_request) { r }
 
-      b = described_class.new(c, 'http://www.example.com')
-      
-      b
+      described_class.new(c, 'http://www.example.com')    
     end
     
-    def should_redirect_for_code(code)
-      browser = build_browser(code, 1)
+    def should_redirect(options)
+      browser = build_browser(options)
 
+      expected_url = options[:expected_url] || 'http://www.anotherdomain.com/path'  
       redirects = 0
       browser.connection.should_receive(:build_request).twice do |options|
+        browser.connection.url = options[:url]
         if redirects > 0
-          options[:url].should eq 'http://www.anotherdomain.com/path'
+          options[:url].should eq expected_url
         end
         redirects += 1
         request
@@ -67,26 +70,30 @@ describe Horseman::Browser do
     end
     
     it "follows 301s" do
-      should_redirect_for_code('301')
+      should_redirect(:code => '301')
     end
     
     it "follows 302s" do
-      should_redirect_for_code('302')
+      should_redirect(:code => '302')
     end
     
     it "follows 303s" do
-      should_redirect_for_code('303')
+      should_redirect(:code => '303')
     end
     
     it "follows 307s" do
-      should_redirect_for_code('307')
+      should_redirect(:code => '307')
+    end
+    
+    it "follows relative paths" do
+      should_redirect(:code => '301', :location => 'redirect', :expected_url => 'http://www.example.com/redirect')
     end
     
     it "raises an error after 10 consecutive redirects" do
-      good_browser = build_browser('301', 10)
+      good_browser = build_browser(:code => '301', :redirects => 10)
       good_browser.get!
       
-      bad_browser = build_browser('301', 11)
+      bad_browser = build_browser(:code => '301', :redirects => 11)
       expect { bad_browser.get! }.to raise_error
     end
   end
@@ -95,6 +102,7 @@ describe Horseman::Browser do
     def describe_url
       count = 0
       subject.connection.should_receive(:build_request).twice do |options|
+        subject.connection.url = options[:url]
         yield options[:url] if (count > 0)
         count += 1
         request

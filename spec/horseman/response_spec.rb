@@ -9,7 +9,7 @@ describe Horseman::Response do
     subject.forms.count.should eq 3
 
     subject.forms[0].id.should eq 'form1'
-    subject.forms[0].action.should eq '/action'
+    subject.forms[0].action.should eq 'action'
 
     subject.forms[1].id.should eq 'form2'
     subject.forms[1].action.should eq 'http://www.anotherdomain.com/action'

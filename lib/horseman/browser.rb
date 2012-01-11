@@ -1,6 +1,6 @@
+require 'horseman/action'
 require 'horseman/connection'
 require 'horseman/cookies'
-require 'horseman/response'
 require 'securerandom'
 
 module Horseman
@@ -8,7 +8,7 @@ module Horseman
     MaxRedirects = 10
     
     attr_accessor :base_url
-    attr_reader :cookies, :connection, :last_response, :multipart_boundary
+    attr_reader :cookies, :connection, :last_action, :multipart_boundary
     
     def self.with_base_url(base_url)
       Horseman::Browser.new(Horseman::Connection.new, base_url)
@@ -34,7 +34,7 @@ module Horseman
     
     def post!(path = '/', form = :form, data = {})
       get! path
-      selected_form = @last_response.forms.select {|f| f.id.to_sym == form}.first
+      selected_form = @last_action.response.forms.select {|f| f.id.to_sym == form}.first
       raise "Could not find form #{form}" if selected_form.nil?
 
       selected_form.fields.each do |f|
@@ -42,16 +42,15 @@ module Horseman
       end
       request_body = build_request_body(data, selected_form.encoding)
       
-      if selected_form.action[/\w+:\/\/.*/]
+      if is_absolute_url(selected_form.action)
         # Absolute action http://www.example.com/action
         url = selected_form.action
       elsif selected_form.action == ''
         # No action, post to same URL as GET request
-        url = "#{base_url}#{path}"
+        url = "#{@last_action.url}"
       else
-        # Relative action, reuse scheme and host from GET request
-        uri = URI.parse("#{base_url}#{path}")
-        url = "#{uri.scheme}://#{uri.host}#{selected_form.action}"
+        # Relative action, use relative root from last action
+        url = "#{@last_action.relative_root}#{selected_form.action}"
       end
       
       request = @connection.build_request(:url => "#{url}", :verb => :post, :body => request_body)
@@ -71,11 +70,20 @@ module Horseman
       response = @connection.exec_request(request)
       
       @cookies.update(response.get_fields('set-cookie'))
-      @last_response = Horseman::Response.new(response.body)
+      @last_action = Horseman::Action.new(@connection.uri, response)
 
-      if ['301','302','303','307'].include? response.code
+      code = response.code
+      puts code
+      
+      if ['301','302','303','307'].include? code
         raise "Redirect limit reached" if redirects >= MaxRedirects
-        get!(response['location'], :redirects => redirects+1, :no_base_url => true)
+        
+        redirect_url = response['location']
+        if !is_absolute_url(redirect_url)
+          redirect_url = "#{@last_action.relative_root}#{redirect_url}"
+        end
+        puts redirect_url
+        get!(redirect_url, :redirects => redirects+1, :no_base_url => true)
       end
     end
     
@@ -90,6 +98,10 @@ module Horseman
       else
         data.map {|k,v| "#{k}=#{v}"}.join('&')
       end
+    end
+    
+    def is_absolute_url(url)
+      url[/\w+:\/\/.*/]
     end
   end
 end
