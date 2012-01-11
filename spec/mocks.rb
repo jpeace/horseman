@@ -33,6 +33,8 @@ module Mocks
   def request
     r = double("HttpRequest")
     r.stub(:[]=) {}
+    r.stub(:body) {}
+    r.stub(:each_header) {}
     r
   end
   

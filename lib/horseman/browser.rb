@@ -34,7 +34,7 @@ module Horseman
     
     def post!(path = '/', form = :form, data = {})
       get! path
-      selected_form = @last_action.response.forms.select {|f| f.id.to_sym == form}.first
+      selected_form = @last_action.response.forms.select {|f| f.id && f.id.to_sym == form}.first
       raise "Could not find form #{form}" if selected_form.nil?
 
       selected_form.fields.each do |f|
@@ -60,13 +60,21 @@ module Horseman
                                 else
                                   "application/x-www-form-urlencoded"
                                 end
+      request['Referer'] = @last_action.url
+      
       exec request
     end
     
     private
     
     def exec(request, redirects=0)
-      request['cookie'] = @cookies.to_s
+      request['Cookie'] = @cookies.to_s
+      request['Content-Length'] = request.body ? request.body.length : 0
+      request['User-Agent'] = 'Horseman'
+
+      puts request.body
+      request.each_header {|k,v| puts "#{k}: #{v}"}
+      
       response = @connection.exec_request(request)
       
       @cookies.update(response.get_fields('set-cookie'))
@@ -90,10 +98,10 @@ module Horseman
     def build_request_body(data, encoding=:url)
       if encoding == :multipart
         data.map do |k,v|
-          %{#{@multipart_boundary}
-            Content-Disposition: form-data; name="#{k}"
+%{#{@multipart_boundary}
+Content-Disposition: form-data; name="#{k}"
             
-            #{v}}
+#{v}}
         end.join("\n") + "\n#{@multipart_boundary}"
       else
         data.map {|k,v| "#{k}=#{v}"}.join('&')

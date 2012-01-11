@@ -43,4 +43,20 @@ describe Horseman::Response do
     subject.forms[0].encoding = :multipart
     subject.forms[1].encoding = :url
   end
+  
+  context "with missing form ids" do
+    subject { described_class.new('<form></form><form id="form"></form>')}
+    it "ignores forms without ids" do
+      subject.forms.count.should eq 1
+      subject.forms[0].id.should eq 'form'
+    end
+  end
+  
+  context "with missing field names" do
+    subject { described_class.new('<form id="form"><input name="input1" /><input /></form>')}
+    it "ignores fields without names" do
+      subject.forms[0].fields.count.should eq 1
+      subject.forms[0].fields[0].name.should eq 'input1'
+    end
+  end
 end

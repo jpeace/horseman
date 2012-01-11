@@ -40,12 +40,12 @@ module Horseman
     
     def parse
       doc = Nokogiri::HTML(@body)
-      doc.css('form').each do |f|
+      doc.css('form').select{|f| f.attr('id')}.each do |f|
         form = Form.new(f.attr('id'), f.attr('name'))
         form.action = f.attr('action') || '/'
         form.encoding = @encoding_types[f.attr('enctype')] || :url
         form.fields = []
-        f.css('input').each do |i|
+        f.css('input').select{|i| i.attr('name')}.each do |i|
           field = FormField.new(i.attr('id'), i.attr('name'))
           field.type = @field_types[i.attr('type')] || :text
           field.value = i.attr('value')
