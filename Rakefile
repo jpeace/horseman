@@ -2,7 +2,7 @@ require 'rake'
 require 'rspec/core/rake_task' 
 require 'echoe'
   
-Echoe.new("horseman", "0.0.3") do |p|  
+Echoe.new("horseman", "0.0.4") do |p|  
   p.description     = "Headless HTTP crawler/scraper"  
   p.url             = "http://jarrodpeace.com"  
   p.author          = "Jarrod Peace"  

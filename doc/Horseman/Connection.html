@@ -201,7 +201,7 @@
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">build_request</span>(<span class="ruby-identifier">options</span>={})
   <span class="ruby-keyword">self</span>.<span class="ruby-identifier">url</span> = <span class="ruby-identifier">options</span>[<span class="ruby-value">:url</span>] <span class="ruby-keyword">unless</span> <span class="ruby-identifier">options</span>[<span class="ruby-value">:url</span>].<span class="ruby-identifier">nil?</span>
   
-  <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;#{(options[:verb] || :get).to_s.upcase} #{options[:url] || 'none given'}&quot;</span>
+  <span class="ruby-comment">#puts &quot;#{(options[:verb] || :get).to_s.upcase} #{options[:url] || 'none given'}&quot;</span>
   <span class="ruby-identifier">options</span>[<span class="ruby-value">:verb</span>] <span class="ruby-operator">==</span> (<span class="ruby-value">:get</span> <span class="ruby-operator">||</span> <span class="ruby-keyword">nil</span>) <span class="ruby-operator">?</span> <span class="ruby-identifier">build_get_request</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">build_post_request</span>(<span class="ruby-identifier">options</span>[<span class="ruby-value">:body</span>])
 <span class="ruby-keyword">end</span></pre>
           </div><!-- build_request-source -->
