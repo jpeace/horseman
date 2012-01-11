@@ -71,9 +71,9 @@ module Horseman
       request['Cookie'] = @cookies.to_s
       request['Content-Length'] = request.body ? request.body.length : 0
       request['User-Agent'] = 'Horseman'
-
-      puts request.body
+      
       request.each_header {|k,v| puts "#{k}: #{v}"}
+      puts request.body
       
       response = @connection.exec_request(request)
       
@@ -98,11 +98,8 @@ module Horseman
     def build_request_body(data, encoding=:url)
       if encoding == :multipart
         data.map do |k,v|
-%{#{@multipart_boundary}
-Content-Disposition: form-data; name="#{k}"
-            
-#{v}}
-        end.join("\n") + "\n#{@multipart_boundary}"
+          "--#{@multipart_boundary}\r\nContent-Disposition: form-data; name=\"#{k}\"\r\n\r\n#{v}"
+        end.join("\r\n") + "\r\n--#{@multipart_boundary}--"
       else
         data.map {|k,v| "#{k}=#{v}"}.join('&')
       end

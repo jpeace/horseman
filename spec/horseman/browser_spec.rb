@@ -172,9 +172,9 @@ describe Horseman::Browser do
       
       it "properly encodes form data" do
         describe_request do |request|
-          request.body.should match /^#{subject.multipart_boundary}.*#{subject.multipart_boundary}$/m
-          request.body.should match /#{subject.multipart_boundary}.*Content-Disposition: form-data; name="text".*text_value/m
-          request.body.should match /#{subject.multipart_boundary}.*Content-Disposition: form-data; name="check".*checkbox_value/m
+          request.body.should match /\A--#{subject.multipart_boundary}.*--#{subject.multipart_boundary}--\Z/m
+          request.body.should match /^--#{subject.multipart_boundary}\r\nContent-Disposition: form-data; name="text"\r\n\r\ntext_value/m
+          request.body.should match /^--#{subject.multipart_boundary}\r\nContent-Disposition: form-data; name="check"\r\n\r\ncheckbox_value/m
         end
       end
     end

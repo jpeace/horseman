@@ -16,10 +16,11 @@ module Horseman
   end
   
   class Response
-    attr_reader :body, :forms
+    attr_reader :body, :headers, :forms
     
-    def initialize(body)
+    def initialize(body, headers={})
       @body = body
+      @headers = headers
       @forms = []
       
       @field_types = {
@@ -34,6 +35,10 @@ module Horseman
         'multipart/form-data' => :multipart
       }
       parse
+    end
+    
+    def[](key)
+      @headers[key]
     end
     
     private

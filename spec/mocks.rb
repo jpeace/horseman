@@ -49,6 +49,7 @@ module Mocks
         options[:location] || 'http://www.anotherdomain.com/path'
       end
     end
+    r.stub(:to_hash) { Hash.new }
     r.stub(:get_fields) do |key|
       case key
       when 'set-cookie'
