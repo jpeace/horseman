@@ -6,7 +6,7 @@ module Horseman
     
     def initialize(uri, response=nil)
       @uri = uri
-      @response = Horseman::Response.new(response.body, response.to_hash) unless response.nil?
+      @response = Response.new(response.body, response.to_hash) unless response.nil?
     end
     
     def url

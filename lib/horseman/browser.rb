@@ -11,13 +11,13 @@ module Horseman
     attr_reader :cookies, :connection, :last_action, :multipart_boundary
     
     def self.with_base_url(base_url)
-      Horseman::Browser.new(Horseman::Connection.new, base_url)
+      Browser.new(Connection.new, base_url)
     end
     
     def initialize(connection, base_url='')
       @connection = connection
       @base_url = base_url
-      @cookies = Horseman::Cookies.new
+      @cookies = Cookies.new
       @multipart_boundary = "----HorsemanBoundary#{SecureRandom.hex(8)}"
     end
     
@@ -80,7 +80,7 @@ module Horseman
       response = @connection.exec_request(request)
       
       @cookies.update(response.get_fields('set-cookie'))
-      @last_action = Horseman::Action.new(@connection.uri, response)
+      @last_action = Action.new(@connection.uri, response)
 
       code = response.code
       

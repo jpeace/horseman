@@ -28,6 +28,7 @@ module Horseman
       @http = Net::HTTP.new(@uri.host, @uri.port)
       if (@uri.port == 443)
         @http.use_ssl = true
+        @http.verify_mode = OpenSSL::SSL::VERIFY_PEER
       end
     end
 
