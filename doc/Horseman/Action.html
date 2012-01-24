@@ -200,7 +200,7 @@
             <pre><span class="ruby-comment"># File lib/horseman/action.rb, line 7</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">uri</span>, <span class="ruby-identifier">response</span>=<span class="ruby-keyword">nil</span>)
   <span class="ruby-ivar">@uri</span> = <span class="ruby-identifier">uri</span>
-  <span class="ruby-ivar">@response</span> = <span class="ruby-constant">Horseman</span><span class="ruby-operator">::</span><span class="ruby-constant">Response</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">response</span>.<span class="ruby-identifier">body</span>, <span class="ruby-identifier">response</span>.<span class="ruby-identifier">to_hash</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">response</span>.<span class="ruby-identifier">nil?</span>
+  <span class="ruby-ivar">@response</span> = <span class="ruby-constant">Response</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">response</span>.<span class="ruby-identifier">body</span>, <span class="ruby-identifier">response</span>.<span class="ruby-identifier">to_hash</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">response</span>.<span class="ruby-identifier">nil?</span>
 <span class="ruby-keyword">end</span></pre>
           </div><!-- new-source -->
           

@@ -47,7 +47,7 @@ module Horseman
       end
       request_body = build_request_body(data, selected_form.encoding)
       
-      if is_absolute_url(selected_form.action)
+      if is_absolute_url?(selected_form.action)
         # Absolute action http://www.example.com/action
         url = selected_form.action
       elsif selected_form.action == ''
@@ -65,7 +65,7 @@ module Horseman
                                 else
                                   "application/x-www-form-urlencoded"
                                 end
-      request['Referer'] = @last_action.url
+      request['Referer'] = @last_action.url 
       
       exec request
     end
@@ -88,7 +88,7 @@ module Horseman
         raise "Redirect limit reached" if redirects >= MaxRedirects
         
         redirect_url = response['location']
-        if !is_absolute_url(redirect_url)
+        if !is_absolute_url?(redirect_url)
           redirect_url = "#{@last_action.relative_root}#{redirect_url}"
         end
         get!(redirect_url, :redirects => redirects+1, :no_base_url => true)
@@ -105,7 +105,7 @@ module Horseman
       end
     end
     
-    def is_absolute_url(url)
+    def is_absolute_url?(url)
       url[/\w+:\/\/.*/]
     end
   end

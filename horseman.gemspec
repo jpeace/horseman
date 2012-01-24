@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jarrod Peace"]
-  s.date = "2012-01-11"
+  s.date = "2012-01-24"
   s.description = "Headless HTTP crawler/scraper"
   s.email = "peace.jarrod@gmail.com"
   s.extra_rdoc_files = ["README.rdoc", "lib/horseman.rb", "lib/horseman/action.rb", "lib/horseman/browser.rb", "lib/horseman/connection.rb", "lib/horseman/cookies.rb", "lib/horseman/response.rb", "lib/horseman/version.rb"]
