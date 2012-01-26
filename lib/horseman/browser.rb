@@ -10,15 +10,17 @@ module Horseman
     attr_accessor :base_url
     attr_reader :cookies, :connection, :last_action, :multipart_boundary
     
-    def self.with_base_url(base_url)
-      Browser.new(Connection.new, base_url)
+    def self.with_base_url(base_url, options={})
+      Browser.new(Connection.new, base_url, options)
     end
     
-    def initialize(connection, base_url='')
+    def initialize(connection, base_url='', options={})
       @connection = connection
       @base_url = base_url
       @cookies = Cookies.new
       @multipart_boundary = "----HorsemanBoundary#{SecureRandom.hex(8)}"
+
+      @verbose = options[:verbose] || false
     end
     
     def clear_session
@@ -29,6 +31,8 @@ module Horseman
       url = options[:no_base_url] ? path : "#{@base_url}#{path}"
       request = @connection.build_request(:url => url, :verb => :get)
       redirects = options[:redirects] || 0
+
+      puts "GET: #{path}" if @verbose
       exec(request, redirects)
     end
     
@@ -67,6 +71,7 @@ module Horseman
                                 end
       request['Referer'] = @last_action.url 
       
+      puts "POST: #{path}" if @verbose
       exec request
     end
     
@@ -83,6 +88,7 @@ module Horseman
       @last_action = Action.new(@connection.uri, response)
 
       code = response.code
+      puts code if @verbose
       
       if ['301','302','303','307'].include? code
         raise "Redirect limit reached" if redirects >= MaxRedirects
