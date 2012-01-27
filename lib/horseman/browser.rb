@@ -43,11 +43,11 @@ module Horseman
       data = options[:data] || {}
       unchecked = options[:unchecked] || []
       
-      selected_form = @last_action.response.document.forms.select {|f| f.id && f.id.to_sym == form}.first
+      selected_form = @last_action.response.document.forms[form]
       raise "Could not find form #{form}" if selected_form.nil?
 
-      selected_form.fields.each do |f|
-        data[f.name.to_sym] ||= f.value unless unchecked.include? f.name.to_sym
+      selected_form.fields.each do |name, field|
+        data[name] ||= field.value unless unchecked.include? name
       end
       request_body = build_request_body(data, selected_form.encoding)
       

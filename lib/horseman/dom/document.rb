@@ -8,7 +8,7 @@ module Horseman
 			attr_reader :forms, :scripts
 
 			def initialize(body)
-				@forms = []
+				@forms = {}
 				@scripts = []
 
 				@field_types = {
@@ -35,16 +35,18 @@ module Horseman
 	        form = Form.new(f.attr('id'), f.attr('name'))
 	        form.action = f.attr('action') || '/'
 	        form.encoding = @encoding_types[f.attr('enctype')] || :url
-	        form.fields = []
+	        form.fields = {}
+	        
 	        f.css('input').select{|i| i.attr('name')}.each do |i|
 	          field = FormField.new(i.attr('id'), i.attr('name'))
 	          field.type = @field_types[i.attr('type')] || :text
 	          field.value = i.attr('value')
 
-	          form.fields << field 
+	          form.fields[field.name.to_sym] = field 
 	          form.submit = field if (field.type == :submit)  
 	        end
-	        @forms << form
+	        
+	        @forms[form.id.to_sym] = form
 	      end
 
 	      doc.css('script').select{|s| s.attr('type') == 'text/javascript'}.each do |script|

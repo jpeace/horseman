@@ -5,7 +5,15 @@ module Mocks
   def html
     %{
       <html>
-        <head></head>
+        <head>
+          <script type="text/javascript" src="http://www.example.com/script.js"></script>
+          <script type="text/javascript">
+            alert('hello');
+          </script>
+          <script>
+            alert('no type');
+          </script>
+        </head>
         <body>
           <form id="form1" enctype="multipart/form-data" action="action">
             <input type="text" name="text" value="value1" />
