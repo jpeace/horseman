@@ -1,17 +1,19 @@
 require 'horseman/connection'
 
 module Mocks
-  
   def html
     %{
       <html>
         <head>
           <script type="text/javascript" src="http://www.example.com/script.js"></script>
           <script type="text/javascript">
-            alert('hello');
+            alert("hello");
           </script>
           <script>
-            alert('no type');
+            alert("no type");
+          </script>
+          <script type="some/other/type">
+            alert("invalid");
           </script>
         </head>
         <body>
