@@ -113,11 +113,17 @@
   
     <li><a href="../Horseman/Cookies.html">Horseman::Cookies</a>
   
-    <li><a href="../Horseman/Element.html">Horseman::Element</a>
+    <li><a href="../Horseman/Dom.html">Horseman::Dom</a>
   
-    <li><a href="../Horseman/Form.html">Horseman::Form</a>
+    <li><a href="../Horseman/Dom/Document.html">Horseman::Dom::Document</a>
   
-    <li><a href="../Horseman/FormField.html">Horseman::FormField</a>
+    <li><a href="../Horseman/Dom/Element.html">Horseman::Dom::Element</a>
+  
+    <li><a href="../Horseman/Dom/Form.html">Horseman::Dom::Form</a>
+  
+    <li><a href="../Horseman/Dom/FormField.html">Horseman::Dom::FormField</a>
+  
+    <li><a href="../Horseman/Dom/Script.html">Horseman::Dom::Script</a>
   
     <li><a href="../Horseman/Response.html">Horseman::Response</a>
   
@@ -241,7 +247,7 @@
         
         <div class="method-heading">
           <span class="method-name">new</span><span
-            class="method-args">(connection, base_url='')</span>
+            class="method-args">(connection, base_url='', options={})</span>
           <span class="method-click-advice">click to toggle source</span>
         </div>
         
@@ -254,11 +260,13 @@
           
           <div class="method-source-code" id="new-source">
             <pre><span class="ruby-comment"># File lib/horseman/browser.rb, line 17</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">connection</span>, <span class="ruby-identifier">base_url</span>=<span class="ruby-string">''</span>)
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">connection</span>, <span class="ruby-identifier">base_url</span>=<span class="ruby-string">''</span>, <span class="ruby-identifier">options</span>={})
   <span class="ruby-ivar">@connection</span> = <span class="ruby-identifier">connection</span>
   <span class="ruby-ivar">@base_url</span> = <span class="ruby-identifier">base_url</span>
   <span class="ruby-ivar">@cookies</span> = <span class="ruby-constant">Cookies</span>.<span class="ruby-identifier">new</span>
   <span class="ruby-ivar">@multipart_boundary</span> = <span class="ruby-node">&quot;----HorsemanBoundary#{SecureRandom.hex(8)}&quot;</span>
+
+  <span class="ruby-ivar">@verbose</span> = <span class="ruby-identifier">options</span>[<span class="ruby-value">:verbose</span>] <span class="ruby-operator">||</span> <span class="ruby-keyword">false</span>
 <span class="ruby-keyword">end</span></pre>
           </div><!-- new-source -->
           
@@ -274,7 +282,7 @@
         
         <div class="method-heading">
           <span class="method-name">with_base_url</span><span
-            class="method-args">(base_url)</span>
+            class="method-args">(base_url, options={})</span>
           <span class="method-click-advice">click to toggle source</span>
         </div>
         
@@ -287,8 +295,8 @@
           
           <div class="method-source-code" id="with_base_url-source">
             <pre><span class="ruby-comment"># File lib/horseman/browser.rb, line 13</span>
-<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">with_base_url</span>(<span class="ruby-identifier">base_url</span>)
-  <span class="ruby-constant">Browser</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">Connection</span>.<span class="ruby-identifier">new</span>, <span class="ruby-identifier">base_url</span>)
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">with_base_url</span>(<span class="ruby-identifier">base_url</span>, <span class="ruby-identifier">options</span>={})
+  <span class="ruby-constant">Browser</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">Connection</span>.<span class="ruby-identifier">new</span>, <span class="ruby-identifier">base_url</span>, <span class="ruby-identifier">options</span>)
 <span class="ruby-keyword">end</span></pre>
           </div><!-- with_base_url-source -->
           
@@ -322,7 +330,7 @@
 
           
           <div class="method-source-code" id="clear_session-source">
-            <pre><span class="ruby-comment"># File lib/horseman/browser.rb, line 24</span>
+            <pre><span class="ruby-comment"># File lib/horseman/browser.rb, line 26</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">clear_session</span>
   <span class="ruby-ivar">@cookies</span>.<span class="ruby-identifier">clear</span>
 <span class="ruby-keyword">end</span></pre>
@@ -352,11 +360,13 @@
 
           
           <div class="method-source-code" id="get-21-source">
-            <pre><span class="ruby-comment"># File lib/horseman/browser.rb, line 28</span>
+            <pre><span class="ruby-comment"># File lib/horseman/browser.rb, line 30</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">get!</span>(<span class="ruby-identifier">path</span> = <span class="ruby-string">'/'</span>, <span class="ruby-identifier">options</span> = {})
   <span class="ruby-identifier">url</span> = <span class="ruby-identifier">options</span>[<span class="ruby-value">:no_base_url</span>] <span class="ruby-operator">?</span> <span class="ruby-identifier">path</span> <span class="ruby-operator">:</span> <span class="ruby-node">&quot;#{@base_url}#{path}&quot;</span>
   <span class="ruby-identifier">request</span> = <span class="ruby-ivar">@connection</span>.<span class="ruby-identifier">build_request</span>(<span class="ruby-value">:url</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">url</span>, <span class="ruby-value">:verb</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">:get</span>)
   <span class="ruby-identifier">redirects</span> = <span class="ruby-identifier">options</span>[<span class="ruby-value">:redirects</span>] <span class="ruby-operator">||</span> <span class="ruby-value">0</span>
+
+  <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;GET: #{path}&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@verbose</span>
   <span class="ruby-identifier">exec</span>(<span class="ruby-identifier">request</span>, <span class="ruby-identifier">redirects</span>)
 <span class="ruby-keyword">end</span></pre>
           </div><!-- get-21-source -->
@@ -385,7 +395,7 @@
 
           
           <div class="method-source-code" id="post-21-source">
-            <pre><span class="ruby-comment"># File lib/horseman/browser.rb, line 35</span>
+            <pre><span class="ruby-comment"># File lib/horseman/browser.rb, line 39</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">post!</span>(<span class="ruby-identifier">path</span> = <span class="ruby-string">'/'</span>, <span class="ruby-identifier">options</span> = {})
   <span class="ruby-identifier">get!</span> <span class="ruby-identifier">path</span>
   
@@ -393,7 +403,7 @@
   <span class="ruby-identifier">data</span> = <span class="ruby-identifier">options</span>[<span class="ruby-value">:data</span>] <span class="ruby-operator">||</span> {}
   <span class="ruby-identifier">unchecked</span> = <span class="ruby-identifier">options</span>[<span class="ruby-value">:unchecked</span>] <span class="ruby-operator">||</span> []
   
-  <span class="ruby-identifier">selected_form</span> = <span class="ruby-ivar">@last_action</span>.<span class="ruby-identifier">response</span>.<span class="ruby-identifier">forms</span>.<span class="ruby-identifier">select</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-identifier">f</span>.<span class="ruby-identifier">id</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">f</span>.<span class="ruby-identifier">id</span>.<span class="ruby-identifier">to_sym</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">form</span>}.<span class="ruby-identifier">first</span>
+  <span class="ruby-identifier">selected_form</span> = <span class="ruby-ivar">@last_action</span>.<span class="ruby-identifier">response</span>.<span class="ruby-identifier">document</span>.<span class="ruby-identifier">forms</span>.<span class="ruby-identifier">select</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-identifier">f</span>.<span class="ruby-identifier">id</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">f</span>.<span class="ruby-identifier">id</span>.<span class="ruby-identifier">to_sym</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">form</span>}.<span class="ruby-identifier">first</span>
   <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;Could not find form #{form}&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">selected_form</span>.<span class="ruby-identifier">nil?</span>
 
   <span class="ruby-identifier">selected_form</span>.<span class="ruby-identifier">fields</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>
@@ -421,6 +431,7 @@
                             <span class="ruby-keyword">end</span>
   <span class="ruby-identifier">request</span>[<span class="ruby-string">'Referer'</span>] = <span class="ruby-ivar">@last_action</span>.<span class="ruby-identifier">url</span> 
   
+  <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;POST: #{path}&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@verbose</span>
   <span class="ruby-identifier">exec</span> <span class="ruby-identifier">request</span>
 <span class="ruby-keyword">end</span></pre>
           </div><!-- post-21-source -->

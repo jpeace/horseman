@@ -1,9 +1,9 @@
-require 'horseman/response'
+require 'horseman/dom/document'
 
-describe Horseman::Response do
-  include Mocks
-  
-  subject { described_class.new(html) }
+describe Horseman::Dom::Document do
+	include Mocks
+	
+	subject { described_class.new(html) }
   
   it "parses forms" do
     subject.forms.count.should eq 3
@@ -58,5 +58,5 @@ describe Horseman::Response do
       subject.forms[0].fields.count.should eq 1
       subject.forms[0].fields[0].name.should eq 'input1'
     end
-  end
+  end	
 end

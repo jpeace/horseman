@@ -107,11 +107,17 @@
   
     <li><a href="../Horseman/Cookies.html">Horseman::Cookies</a>
   
-    <li><a href="../Horseman/Element.html">Horseman::Element</a>
+    <li><a href="../Horseman/Dom.html">Horseman::Dom</a>
   
-    <li><a href="../Horseman/Form.html">Horseman::Form</a>
+    <li><a href="../Horseman/Dom/Document.html">Horseman::Dom::Document</a>
   
-    <li><a href="../Horseman/FormField.html">Horseman::FormField</a>
+    <li><a href="../Horseman/Dom/Element.html">Horseman::Dom::Element</a>
+  
+    <li><a href="../Horseman/Dom/Form.html">Horseman::Dom::Form</a>
+  
+    <li><a href="../Horseman/Dom/FormField.html">Horseman::Dom::FormField</a>
+  
+    <li><a href="../Horseman/Dom/Script.html">Horseman::Dom::Script</a>
   
     <li><a href="../Horseman/Response.html">Horseman::Response</a>
   
@@ -157,9 +163,9 @@
         </div>
       </div>
       
-      <div id="attribute-i-forms" class="method-detail">
+      <div id="attribute-i-document" class="method-detail">
         <div class="method-heading attribute-method-heading">
-          <span class="method-name">forms</span><span
+          <span class="method-name">document</span><span
             class="attribute-access-type">[R]</span>
         </div>
 
@@ -208,24 +214,11 @@
 
           
           <div class="method-source-code" id="new-source">
-            <pre><span class="ruby-comment"># File lib/horseman/response.rb, line 21</span>
+            <pre><span class="ruby-comment"># File lib/horseman/response.rb, line 7</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">body</span>, <span class="ruby-identifier">headers</span>={})
   <span class="ruby-ivar">@body</span> = <span class="ruby-identifier">body</span>
   <span class="ruby-ivar">@headers</span> = <span class="ruby-identifier">headers</span>
-  <span class="ruby-ivar">@forms</span> = []
-  
-  <span class="ruby-ivar">@field_types</span> = {
-    <span class="ruby-string">'text'</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">:text</span>,
-    <span class="ruby-string">'checkbox'</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">:checkbox</span>,
-    <span class="ruby-string">'hidden'</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">:hidden</span>,
-    <span class="ruby-string">'submit'</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">:submit</span>
-  }
-  
-  <span class="ruby-ivar">@encoding_types</span> = {
-    <span class="ruby-string">'application/x-www-form-urlencoded'</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">:url</span>,
-    <span class="ruby-string">'multipart/form-data'</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value">:multipart</span>
-  }
-  <span class="ruby-identifier">parse</span>
+  <span class="ruby-ivar">@document</span> = <span class="ruby-constant">Dom</span><span class="ruby-operator">::</span><span class="ruby-constant">Document</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@body</span>)
 <span class="ruby-keyword">end</span></pre>
           </div><!-- new-source -->
           
@@ -259,7 +252,7 @@
 
           
           <div class="method-source-code" id="5B-5D-source">
-            <pre><span class="ruby-comment"># File lib/horseman/response.rb, line 40</span>
+            <pre><span class="ruby-comment"># File lib/horseman/response.rb, line 13</span>
 <span class="ruby-keyword">def</span><span class="ruby-operator">[]</span>(<span class="ruby-identifier">key</span>)
   <span class="ruby-ivar">@headers</span>[<span class="ruby-identifier">key</span>]
 <span class="ruby-keyword">end</span></pre>

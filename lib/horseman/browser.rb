@@ -43,7 +43,7 @@ module Horseman
       data = options[:data] || {}
       unchecked = options[:unchecked] || []
       
-      selected_form = @last_action.response.forms.select {|f| f.id && f.id.to_sym == form}.first
+      selected_form = @last_action.response.document.forms.select {|f| f.id && f.id.to_sym == form}.first
       raise "Could not find form #{form}" if selected_form.nil?
 
       selected_form.fields.each do |f|

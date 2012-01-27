@@ -1,65 +1,17 @@
-require 'nokogiri'
+require 'horseman/dom/document'
 
 module Horseman
-  class Element
-    attr_accessor :id, :name
-    def initialize(id='', name='')
-      @id = id
-      @name = name
-    end
-  end
-  class Form < Element
-    attr_accessor :action, :encoding, :fields, :submit
-  end
-  class FormField < Element
-    attr_accessor :type, :value
-  end
-  
   class Response
-    attr_reader :body, :headers, :forms
+    attr_reader :body, :headers, :document
     
     def initialize(body, headers={})
       @body = body
       @headers = headers
-      @forms = []
-      
-      @field_types = {
-        'text' => :text,
-        'checkbox' => :checkbox,
-        'hidden' => :hidden,
-        'submit' => :submit
-      }
-      
-      @encoding_types = {
-        'application/x-www-form-urlencoded' => :url,
-        'multipart/form-data' => :multipart
-      }
-      parse
+      @document = Dom::Document.new(@body)
     end
     
     def[](key)
       @headers[key]
     end
-    
-    private
-    
-    def parse
-      doc = Nokogiri::HTML(@body)
-      doc.css('form').select{|f| f.attr('id')}.each do |f|
-        form = Form.new(f.attr('id'), f.attr('name'))
-        form.action = f.attr('action') || '/'
-        form.encoding = @encoding_types[f.attr('enctype')] || :url
-        form.fields = []
-        f.css('input').select{|i| i.attr('name')}.each do |i|
-          field = FormField.new(i.attr('id'), i.attr('name'))
-          field.type = @field_types[i.attr('type')] || :text
-          field.value = i.attr('value')
-
-          form.fields << field 
-          form.submit = field if (field.type == :submit)  
-        end
-        @forms << form
-      end
-    end       
   end
 end
