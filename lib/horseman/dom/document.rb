@@ -1,4 +1,6 @@
+require 'open-uri'
 require 'nokogiri'
+
 require 'horseman/dom/form'
 require 'horseman/dom/script'
 
@@ -49,8 +51,17 @@ module Horseman
 	        @forms[form.id.to_sym] = form
 	      end
 
-	      doc.css('script').select{|s| s.attr('type') == 'text/javascript'}.each do |script|
-					# parse scripts      
+	      valid_script_types = ['text/javascript']
+	      doc.css('script').select{|s| (s.attr('type').nil?) || (valid_script_types.include? s.attr('type')) }.each do |s|
+	      	script = Script.new
+	      	if s.attr('src')
+	      		# TODO -- account for HTTP failures
+	      		script.body = open(s.attr('src'))	{|f| f.read.strip}
+	      	else
+	      		script.body = s.inner_html.strip
+	      	end
+
+	      	@scripts << script
 	      end
 			end
 		end
