@@ -1,5 +1,4 @@
 require 'horseman/dom/document'
-require_relative '../../patches/open-uri'
 
 describe Horseman::Dom::Document do
 	include Mocks

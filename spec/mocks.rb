@@ -75,4 +75,11 @@ module Mocks
     c.stub(:exec_request) { response }
     c
   end
+
+  def js_engine
+    e = double("JavascriptEngine")
+    e.stub(:test) {}
+    e.stub(:execute) {}
+    e
+  end
 end

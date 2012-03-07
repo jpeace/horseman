@@ -1,9 +1,9 @@
 require 'horseman/browser'
 
-describe Horseman::Browser do
+describe Horseman::Browser::Browser do
   include Mocks
   
-  subject {described_class.new(connection, 'http://www.example.com')}
+  subject {described_class.new(connection, js_engine, 'http://www.example.com')}
   
   it "saves cookies" do
     subject.cookies.should be_empty
@@ -33,6 +33,14 @@ describe Horseman::Browser do
     subject.last_action.response.body.should eq html
   end
 
+  it "executes javascript" do
+    subject.js_engine.should_receive(:execute) do |body, scope|
+      ['alert("downloaded");', 'alert("hello");', 'alert("no type");'].should include(body)
+    end.exactly(3).times
+
+    subject.get!
+  end
+
   context "when processing redirects" do
     
     def build_browser(options)
@@ -50,7 +58,7 @@ describe Horseman::Browser do
       c = connection
       c.stub(:exec_request) { r }
 
-      described_class.new(c, 'http://www.example.com')    
+      described_class.new(c, js_engine, 'http://www.example.com')    
     end
     
     def should_redirect(options)

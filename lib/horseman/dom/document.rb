@@ -51,7 +51,7 @@ module Horseman
 	        @forms[form.id.to_sym] = form
 	      end
 
-	      valid_script_types = ['text/javascript']
+	      valid_script_types = ['javascript', 'text/javascript']
 	      doc.css('script').select{|s| (s.attr('type').nil?) || (valid_script_types.include? s.attr('type')) }.each do |s|
 	      	script = Script.new
 	      	if s.attr('src')

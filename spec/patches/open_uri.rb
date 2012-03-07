@@ -1,3 +1,5 @@
+require 'open-uri'
+
 class DummyIO
   def read
     'alert("downloaded");'

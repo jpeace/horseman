@@ -20,5 +20,5 @@ task :default => :spec
 
 desc "Run specs"
 RSpec::Core::RakeTask.new do |t|
-  t.rspec_opts = '-cfd'
+  t.rspec_opts = '-cfd --require spec_helper'
 end
