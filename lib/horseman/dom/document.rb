@@ -4,9 +4,13 @@ require 'nokogiri'
 require 'horseman/dom/form'
 require 'horseman/dom/script'
 
+require 'horseman/browser/whiny'
+
 module Horseman
 	module Dom
 		class Document
+			#include Horseman::Browser::Whiny
+
 			attr_reader :forms, :scripts
 
 			def initialize(body)
@@ -27,8 +31,6 @@ module Horseman
 	      
 				parse! body
 			end
-
-			private
 
 			def parse!(body)
 				doc = Nokogiri::HTML(body)

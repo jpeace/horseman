@@ -104,9 +104,9 @@ module Horseman
             redirect_url = "#{@last_action.relative_root}#{redirect_url}"
           end
           get!(redirect_url, :redirects => redirects+1, :no_base_url => true)
+        else
+          exec_javascript
         end
-
-        exec_javascript
       end
 
       def exec_javascript
