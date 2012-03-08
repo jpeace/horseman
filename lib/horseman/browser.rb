@@ -7,16 +7,17 @@ require 'securerandom'
 
 module Horseman
   module Browser
+    def self.with_base_url(base_url, options={})
+      Browser.new(Connection.new, JavascriptEngine.new, base_url, options)
+    end
+      
+      
     class Browser    
       MaxRedirects = 10
       
       attr_accessor :base_url
       attr_reader :connection, :js_engine
       attr_reader :cookies, :last_action, :multipart_boundary
-      
-      def self.with_base_url(base_url, options={})
-        Browser.new(Connection.new, JavascriptEngine.new, base_url, options)
-      end
       
       def initialize(connection, js_engine, base_url='', options={})
         @connection = connection
