@@ -1,24 +1,6 @@
 require 'horseman/browser/output'
 require 'horseman/browser/location'
 
-module V8
-  class Access
-    def get(obj, name, &dontintercept)
-
-    	puts "V8: #{obj.class.name} - #{name}"
-      methods = accessible_methods(obj)
-      if methods.include?(name)
-        method = obj.method(name)
-        method.arity == 0 ? method.call : method.unbind
-      elsif obj.respond_to?(:[])
-        obj.send(:[], name, &dontintercept)
-      else
-        yield
-      end
-    end
-  end
-end
-
 module Horseman
 	module Browser
 		class Window
@@ -45,6 +27,14 @@ module Horseman
 			def window
 				self
 			end
+
+      def respond_to?(method_sym, include_private = false)
+        true
+      end
+
+      def method_missing(method, *arguments, &block)
+        puts "Not implemented in Window: #{method} #{arguments.join(',')}"
+      end
 		end
 	end
 end

@@ -1,10 +1,6 @@
-require 'horseman/browser/whiny'
-
 module Horseman
 	module Browser
 		class Location
-			#include Whiny
-
 			def initialize(window)
 				@window = window
 			end
@@ -13,6 +9,14 @@ module Horseman
 				@window.browser.get! value, :no_base_url=>true
 				# TODO - Can we stop executing javascript here?
 			end
+
+      def respond_to?(method_sym, include_private = false)
+        true
+      end
+
+      def method_missing(method, *arguments, &block)
+        puts "Not implemented in Location: #{method} #{arguments.join(',')}"
+      end
 		end
 	end
 end

@@ -33,12 +33,15 @@ describe Horseman::Browser::Browser do
     subject.last_action.response.body.should eq html
   end
 
-  it "executes javascript" do
-    subject.js_engine.should_receive(:execute) do |body, scope|
-      ['alert("downloaded");', 'alert("hello");', 'alert("no type");'].should include(body)
-    end.exactly(3).times
+  context "when javascript is enabled" do
+    subject {described_class.new(connection, js_engine, 'http://www.example.com', :enable_js => true)}
+    it "executes javascript" do
+      subject.js_engine.should_receive(:execute) do |body, scope|
+        ['alert("downloaded");', 'alert("hello");', 'alert("no type");'].should include(body)
+      end.exactly(3).times
 
-    subject.get!
+      subject.get!
+    end
   end
 
   context "when processing redirects" do

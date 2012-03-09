@@ -4,12 +4,9 @@ require 'nokogiri'
 require 'horseman/dom/form'
 require 'horseman/dom/script'
 
-require 'horseman/browser/whiny'
-
 module Horseman
 	module Dom
 		class Document
-			#include Horseman::Browser::Whiny
 
 			attr_reader :forms, :scripts
 
@@ -66,6 +63,21 @@ module Horseman
 	      	@scripts << script
 	      end
 			end
+
+			def respond_to?(method_sym, include_private = false)
+        true
+      end
+
+      def method_missing(method, *arguments, &block)
+      	case method
+      	when :[]
+      		indexer = arguments[0]
+      		form = @forms.select {|id, form| id.to_s == indexer}.map {|k,v| v}.first
+      		return form unless form.nil?
+      	end
+
+        puts "Not implemented in Document: #{method} #{arguments.join(',')}"
+      end
 		end
 	end
 end

@@ -27,6 +27,7 @@ module Horseman
         @multipart_boundary = "----HorsemanBoundary#{SecureRandom.hex(8)}"
 
         @verbose = options[:verbose] || false
+        @enable_js = options[:enable_js] || false
       end
       
       def clear_session
@@ -105,13 +106,12 @@ module Horseman
           end
           get!(redirect_url, :redirects => redirects+1, :no_base_url => true)
         else
-          exec_javascript
+          exec_javascript if @enable_js
         end
       end
 
       def exec_javascript
         window = Window.new(self)
-        @js_engine.test
         @last_action.response.document.scripts.each do |script|
           @js_engine.execute(script.body, window)
         end
