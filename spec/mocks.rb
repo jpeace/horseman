@@ -30,6 +30,7 @@ module Mocks
           </form>
           <form id="form3" action="">
           </form>
+          <frame name="frame1" src="http://www.some-frame.com" />
         </body>
       </html>
     }

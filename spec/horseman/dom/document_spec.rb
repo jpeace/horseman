@@ -88,5 +88,16 @@ describe Horseman::Dom::Document do
   		subject.scripts[2].body.should eq 'alert("no type");'
   	end
   end
- 
+
+  context "when parsing frames" do
+    it "creates a sub-document" do
+      subject.frames[:frame1].is_a? Horseman::Dom::Document
+    end
+
+    it "correctly parses the sub-document" do
+      subject.frames[:frame1].forms.count.should eq 1
+      subject.frames[:frame1].forms[:form1].fields.count.should eq 4
+    end
+  end
+
 end

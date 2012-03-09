@@ -8,11 +8,12 @@ module Horseman
 	module Dom
 		class Document
 
-			attr_reader :forms, :scripts
+			attr_reader :forms, :scripts, :frames
 
 			def initialize(body)
 				@forms = {}
 				@scripts = []
+				@frames = {}
 
 				@field_types = {
 	        'text' => :text,
@@ -61,6 +62,11 @@ module Horseman
 	      	end
 
 	      	@scripts << script
+	      end
+
+	      doc.css('frame').select{|f| f.attr('src') && f.attr('name')}.each do |f|
+	      	frame_body = open(f.attr('src')) {|f| f.read.strip}
+	      	@frames[f.attr('name').to_sym] = Document.new(frame_body)
 	      end
 			end
 
