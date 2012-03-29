@@ -56,7 +56,12 @@ module Horseman
 	      	script = Script.new
 	      	if s.attr('src')
 	      		# TODO -- account for HTTP failures
-	      		script.body = open(s.attr('src'))	{|f| f.read.strip}
+	      		js_src = s.attr('src')
+	      		begin
+	      			script.body = open(s.attr('src'))	{|f| f.read.strip}
+	      		rescue
+	      			puts "Could not load javascript at #{js_src}"	
+	      		end
 	      	else
 	      		script.body = s.inner_html.strip
 	      	end
