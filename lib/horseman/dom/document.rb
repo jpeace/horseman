@@ -8,7 +8,7 @@ module Horseman
 	module Dom
 		class Document
 
-			attr_reader :forms, :scripts, :frames
+			attr_reader :forms, :scripts, :frames, :dom
 
 			def initialize(body)
 				@forms = {}
@@ -68,6 +68,8 @@ module Horseman
 	      	frame_body = open(f.attr('src')) {|f| f.read.strip}
 	      	@frames[f.attr('name').to_sym] = Document.new(frame_body)
 	      end
+
+	      @dom = doc
 			end
 
 			def respond_to?(method_sym, include_private = false)
