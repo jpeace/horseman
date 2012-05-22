@@ -60,7 +60,7 @@ module Horseman
 	      		begin
 	      			script.body = open(s.attr('src'))	{|f| f.read.strip}
 	      		rescue
-	      			puts "Could not load javascript at #{js_src}"	
+	      			# puts "Could not load javascript at #{js_src}"	
 	      		end
 	      	else
 	      		script.body = s.inner_html.strip
@@ -75,7 +75,7 @@ module Horseman
 	      		frame_body = open(frame_src) {|f| f.read.strip}
 	      		@frames[f.attr('name').to_sym] = Document.new(frame_body)
 	      	rescue
-	      		puts "Could not load frame at #{frame_src}"
+	      		# puts "Could not load frame at #{frame_src}"
 	      	end
 	      end
 
