@@ -8,8 +8,8 @@ Echoe.new("horseman", "0.0.5") do |p|
   p.author          = "Jarrod Peace"  
   p.email           = "peace.jarrod@gmail.com"  
   p.ignore_pattern  = [".gitignore", "vendor/**/*", ".bundle/*"]
-  p.development_dependencies = []
-  p.runtime_dependencies = ["nokogiri >=1.5.0", "therubyracer >=1.10.1"]
+  p.development_dependencies = ["rake", "rspec", "echoe"]
+  p.runtime_dependencies = ["nokogiri >=1.5.0", "therubyracer >=0.12.1"]
 end  
   
 desc "Default task - runs specs"

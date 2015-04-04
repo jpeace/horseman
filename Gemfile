@@ -1,7 +1,6 @@
 source "https://rubygems.org"
 
-gem "nokogiri"
-gem "therubyracer"
+gemspec
 
 group :development do
   gem "rake"
