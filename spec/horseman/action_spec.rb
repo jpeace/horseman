@@ -7,11 +7,11 @@ describe Horseman::Action do
     subject {described_class.new(URI.parse('http://www.example.com/path/file.html'))}
   
     it "provides access to full URL" do
-      subject.url.should eq 'http://www.example.com/path/file.html'
+      expect(subject.url).to eq 'http://www.example.com/path/file.html'
     end
   
     it "provides access to a relative path root" do
-      subject.relative_root.should eq 'http://www.example.com/path/'
+      expect(subject.relative_root).to eq 'http://www.example.com/path/'
     end
   end
   
@@ -19,11 +19,11 @@ describe Horseman::Action do
     subject {described_class.new(URI.parse('http://www.example.com/path/file.html?q1=value'))}
   
     it "provides access to full URL" do
-      subject.url.should eq 'http://www.example.com/path/file.html?q1=value'
+      expect(subject.url).to eq 'http://www.example.com/path/file.html?q1=value'
     end
   
     it "provides access to a relative path root" do
-      subject.relative_root.should eq 'http://www.example.com/path/'
+      expect(subject.relative_root).to eq 'http://www.example.com/path/'
     end
   end
 end

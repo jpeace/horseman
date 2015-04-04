@@ -6,17 +6,17 @@ describe Horseman::Browser::Browser do
   subject { described_class.new(connection, js_engine, "http://www.example.com")}
   
   it "saves cookies" do
-    subject.cookies.should be_empty
+    expect(subject.cookies).to be_empty
 
     subject.get!
-    subject.cookies.count.should eq 2
-    subject.cookies["name1"].should eq "value1"
-    subject.cookies["name2"].should eq "value2"
+    expect(subject.cookies.count).to eq 2
+    expect(subject.cookies["name1"]).to eq "value1"
+    expect(subject.cookies["name2"]).to eq "value2"
 
-    subject.connection.should_receive(:exec_request) do |request|
-      request["cookie"].should match /\w+=\w+; \w+=\w+/
-      request["cookie"].should match /name1=value1/
-      request["cookie"].should match /name2=value2/
+    expect(subject.connection).to receive(:exec_request) do |request|
+      expect(request["cookie"]).to match /\w+=\w+; \w+=\w+/
+      expect(request["cookie"]).to match /name1=value1/
+      expect(request["cookie"]).to match /name2=value2/
       response
     end
     subject.get!
@@ -24,22 +24,22 @@ describe Horseman::Browser::Browser do
   
   it "empties the cookies when the session is cleared" do
     subject.get!
-    subject.cookies.should_not be_empty
+    expect(subject.cookies).not_to be_empty
     subject.clear_session
-    subject.cookies.should be_empty
+    expect(subject.cookies).to be_empty
   end
   
   it "stores information about the last response" do
     subject.get!
-    subject.last_action.response.body.should eq html
+    expect(subject.last_action.response.body).to eq html
   end
 
   context "when javascript is enabled" do
     subject {described_class.new(connection, js_engine, "http://www.example.com", :enable_js => true)}
     it "executes javascript" do
-      subject.js_engine.should_receive(:execute) do |body, scope|
-        [%{alert("downloaded");}, %{alert("hello");}, %{alert("no type");}].should include(body)
-      end.exactly(3).times
+      expect(subject.js_engine).to receive(:execute) { |body, scope|
+        expect([%{alert("downloaded");}, %{alert("hello");}, %{alert("no type");}]).to include(body)
+      }.exactly(3).times
 
       subject.get!
     end
@@ -53,14 +53,14 @@ describe Horseman::Browser::Browser do
       location = options[:location]
       r = response(:location => location)
       redirects = 0
-      r.stub(:code) do
+      allow(r).to receive(:code) do
         code = (redirects >= num_redirects) ? "200" : code
         redirects += 1
         code
       end
       
       c = connection
-      c.stub(:exec_request) { r }
+      allow(c).to receive(:exec_request) { r }
 
       described_class.new(c, js_engine, "http://www.example.com")    
     end
@@ -70,10 +70,10 @@ describe Horseman::Browser::Browser do
 
       expected_url = options[:expected_url] || "http://www.anotherdomain.com/path"  
       redirects = 0
-      browser.connection.should_receive(:build_request).twice do |options|
+      expect(browser.connection).to receive(:build_request).twice do |options|
         browser.connection.url = options[:url]
         if redirects > 0
-          options[:url].should eq expected_url
+          expect(options[:url]).to eq expected_url
         end
         redirects += 1
         request
@@ -113,7 +113,7 @@ describe Horseman::Browser::Browser do
   context "when posting" do
     def describe_url
       count = 0
-      subject.connection.should_receive(:build_request).twice do |options|
+      expect(subject.connection).to receive(:build_request).twice do |options|
         subject.connection.url = options[:url]
         yield options[:url] if (count > 0)
         count += 1
@@ -123,7 +123,7 @@ describe Horseman::Browser::Browser do
     end
     
     def describe_request
-      subject.connection.should_receive(:exec_request).twice do |request|
+      expect(subject.connection).to receive(:exec_request).twice do |request|
         if (request.method == "POST")
           yield request
         end
@@ -143,7 +143,7 @@ describe Horseman::Browser::Browser do
       
       it "constructs the correct URL" do
         describe_url do |url|
-          url.should eq "http://www.example.com/action"
+          expect(url).to eq "http://www.example.com/action"
         end
       end
     end
@@ -155,7 +155,7 @@ describe Horseman::Browser::Browser do
       
       it "constructs the correct URL" do
         describe_url do |url|
-          url.should eq "http://www.anotherdomain.com/action"
+          expect(url).to eq "http://www.anotherdomain.com/action"
         end
       end
     end
@@ -167,7 +167,7 @@ describe Horseman::Browser::Browser do
       
       it "constructs the correct URL" do
         describe_url do |url|
-          url.should eq "http://www.example.com/path"
+          expect(url).to eq "http://www.example.com/path"
         end
       end
     end
@@ -179,7 +179,7 @@ describe Horseman::Browser::Browser do
       
       it "does not include unchecked checkboxes" do
         describe_request do |request|
-          request.body.should_not match /name="check"/
+          expect(request.body).not_to match /name="check"/
         end
       end
     end
@@ -191,15 +191,15 @@ describe Horseman::Browser::Browser do
       
       it "properly sets content type" do
         describe_request do |request|
-          request["Content-Type"].should eq "multipart/form-data; boundary=#{subject.multipart_boundary}"
+          expect(request["Content-Type"]).to eq "multipart/form-data; boundary=#{subject.multipart_boundary}"
         end
       end
       
       it "properly encodes form data" do
         describe_request do |request|
-          request.body.should match /\A--#{subject.multipart_boundary}.*--#{subject.multipart_boundary}--\Z/m
-          request.body.should match /^--#{subject.multipart_boundary}\r\nContent-Disposition: form-data; name="text"\r\n\r\ntext_value/m
-          request.body.should match /^--#{subject.multipart_boundary}\r\nContent-Disposition: form-data; name="check"\r\n\r\ncheckbox_value/m
+          expect(request.body).to match /\A--#{subject.multipart_boundary}.*--#{subject.multipart_boundary}--\Z/m
+          expect(request.body).to match /^--#{subject.multipart_boundary}\r\nContent-Disposition: form-data; name="text"\r\n\r\ntext_value/m
+          expect(request.body).to match /^--#{subject.multipart_boundary}\r\nContent-Disposition: form-data; name="check"\r\n\r\ncheckbox_value/m
         end
       end
     end
@@ -211,15 +211,15 @@ describe Horseman::Browser::Browser do
     
       it "properly sets content type" do
         describe_request do |request|
-          request["Content-Type"].should eq "application/x-www-form-urlencoded"
+          expect(request["Content-Type"]).to eq "application/x-www-form-urlencoded"
         end
       end
       
       it "properly encodes form data" do
         describe_request do |request|
-          request.body.should match /\w+=\w+&\w+=\w+/
-          request.body.should match /text1=value1/
-          request.body.should match /text2=value2/
+          expect(request.body).to match /\w+=\w+&\w+=\w+/
+          expect(request.body).to match /text1=value1/
+          expect(request.body).to match /text2=value2/
         end
       end
     end

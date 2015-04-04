@@ -12,12 +12,12 @@ describe Horseman::Connection do
     let(:request) {subject.build_request(:verb => :get)}
     
     it "uses the proper path" do
-      request.path.should eq "/some/path"
+      expect(request.path).to eq "/some/path"
     end
     
     context "using GET" do
       it "uses the proper method" do
-        request.method.should eq "GET"
+        expect(request.method).to eq "GET"
       end
     end
     
@@ -25,20 +25,20 @@ describe Horseman::Connection do
       let(:request) {subject.build_request(:verb => :post)}
       
       it "uses the proper method" do
-        request.method.should eq "POST"
+        expect(request.method).to eq "POST"
       end
 
       context "with form data" do
         let(:request) {subject.build_request(:verb => :post, :body => "field1=value1&field2=value2")}
         
         it "properly sets request body" do
-          request.body.should eq "field1=value1&field2=value2"
+          expect(request.body).to eq "field1=value1&field2=value2"
         end
       end
 
       context "without form data" do    
         it "properly sets request body" do
-          request.body.should be_nil
+          expect(request.body).to be_nil
         end
       end
     end    
@@ -46,7 +46,7 @@ describe Horseman::Connection do
   
   context "when accessed using http" do
     it "does not use SSL" do
-      subject.http.use_ssl?.should be_falsey
+      expect(subject.http.use_ssl?).to be_falsey
     end
   end
   
@@ -58,7 +58,7 @@ describe Horseman::Connection do
     end
 
     it "uses SSL" do
-      subject.http.use_ssl?.should be_truthy
+      expect(subject.http.use_ssl?).to be_truthy
     end
   end  
 end

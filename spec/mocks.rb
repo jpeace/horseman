@@ -43,16 +43,16 @@ module Mocks
   
   def request
     r = double("HttpRequest")
-    r.stub(:[]=) {}
-    r.stub(:body) {}
-    r.stub(:each_header) {}
+    allow(r).to receive(:[]=) {}
+    allow(r).to receive(:body) {}
+    allow(r).to receive(:each_header) {}
     r
   end
   
   def response(options={})
     r = double("HttpResponse")
-    r.stub(:code) { "200" }
-    r.stub(:[]) do |key|
+    allow(r).to receive(:code) { "200" }
+    allow(r).to receive(:[]) do |key|
       case key
       when "set-cookie"
         cookies.join(", ")
@@ -60,27 +60,27 @@ module Mocks
         options[:location] || "http://www.anotherdomain.com/path"
       end
     end
-    r.stub(:to_hash) { Hash.new }
-    r.stub(:get_fields) do |key|
+    allow(r).to receive(:to_hash) { Hash.new }
+    allow(r).to receive(:get_fields) do |key|
       case key
       when "set-cookie"
         cookies
       end
     end
-    r.stub(:body) { html }
+    allow(r).to receive(:body) { html }
     r
   end
   
   def connection
     c = Horseman::Connection.new
-    c.stub(:exec_request) { response }
+    allow(c).to receive(:exec_request) { response }
     c
   end
 
   def js_engine
     e = double("JavascriptEngine")
-    e.stub(:test) {}
-    e.stub(:execute) {}
+    allow(e).to receive(:test) {}
+    allow(e).to receive(:execute) {}
     e
   end
 end
