@@ -13,13 +13,13 @@ module Horseman
       md = /(\w+)=(.*)/.match(attribute)
       if md
         case md.captures[0].downcase
-        when 'domain'
+        when "domain"
           @domain = md.captures[1]
-        when 'path'
+        when "path"
           @path = md.captures[1]
-        when 'expires'
+        when "expires"
           @expiration = DateTime.parse(md.captures[1])
-        when 'max-age'
+        when "max-age"
           @expiration = DateTime.now + (md.captures[1] / (60 * 60 * 24))
         end
       end

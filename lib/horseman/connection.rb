@@ -1,6 +1,6 @@
-require 'uri'
-require 'net/http'
-require 'net/https'
+require "uri"
+require "net/http"
+require "net/https"
 
 module Horseman
   class Connection

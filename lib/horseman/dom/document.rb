@@ -1,8 +1,8 @@
-require 'open-uri'
-require 'nokogiri'
+require "open-uri"
+require "nokogiri"
 
-require 'horseman/dom/form'
-require 'horseman/dom/script'
+require "horseman/dom/form"
+require "horseman/dom/script"
 
 module Horseman
 	module Dom
@@ -16,15 +16,15 @@ module Horseman
 				@frames = {}
 
 				@field_types = {
-	        'text' => :text,
-	        'checkbox' => :checkbox,
-	        'hidden' => :hidden,
-	        'submit' => :submit
+	        "text" => :text,
+	        "checkbox" => :checkbox,
+	        "hidden" => :hidden,
+	        "submit" => :submit
 	      }
 	      
 	      @encoding_types = {
-	        'application/x-www-form-urlencoded' => :url,
-	        'multipart/form-data' => :multipart
+	        "application/x-www-form-urlencoded" => :url,
+	        "multipart/form-data" => :multipart
 	      }
 	      
 				parse! body
@@ -33,16 +33,16 @@ module Horseman
 			def parse!(body)
 				doc = Nokogiri::HTML(body)
 	      
-	      doc.css('form').select{|f| f.attr('id')}.each do |f|
-	        form = Form.new(f.attr('id'), f.attr('name'))
-	        form.action = f.attr('action') || '/'
-	        form.encoding = @encoding_types[f.attr('enctype')] || :url
+	      doc.css("form").select{|f| f.attr("id")}.each do |f|
+	        form = Form.new(f.attr("id"), f.attr("name"))
+	        form.action = f.attr("action") || "/"
+	        form.encoding = @encoding_types[f.attr("enctype")] || :url
 	        form.fields = {}
 	        
-	        f.css('input').select{|i| i.attr('name')}.each do |i|
-	          field = FormField.new(i.attr('id'), i.attr('name'))
-	          field.type = @field_types[i.attr('type')] || :text
-	          field.value = i.attr('value')
+	        f.css("input").select{|i| i.attr("name")}.each do |i|
+	          field = FormField.new(i.attr("id"), i.attr("name"))
+	          field.type = @field_types[i.attr("type")] || :text
+	          field.value = i.attr("value")
 
 	          form.fields[field.name.to_sym] = field 
 	          form.submit = field if (field.type == :submit)  
@@ -51,14 +51,14 @@ module Horseman
 	        @forms[form.id.to_sym] = form
 	      end
 
-	      valid_script_types = ['javascript', 'text/javascript']
-	      doc.css('script').select{|s| (s.attr('type').nil?) || (valid_script_types.include? s.attr('type')) }.each do |s|
+	      valid_script_types = ["javascript", "text/javascript"]
+	      doc.css("script").select{|s| (s.attr("type").nil?) || (valid_script_types.include? s.attr("type")) }.each do |s|
 	      	script = Script.new
-	      	if s.attr('src')
+	      	if s.attr("src")
 	      		# TODO -- account for HTTP failures
-	      		js_src = s.attr('src')
+	      		js_src = s.attr("src")
 	      		begin
-	      			script.body = open(s.attr('src'))	{|f| f.read.strip}
+	      			script.body = open(s.attr("src"))	{|f| f.read.strip}
 	      		rescue
 	      			# puts "Could not load javascript at #{js_src}"	
 	      		end
@@ -69,11 +69,11 @@ module Horseman
 	      	@scripts << script
 	      end
 
-	      doc.css('frame').select{|f| f.attr('src') && f.attr('name')}.each do |f|
-	      	frame_src = f.attr('src')
+	      doc.css("frame").select{|f| f.attr("src") && f.attr("name")}.each do |f|
+	      	frame_src = f.attr("src")
 	      	begin
 	      		frame_body = open(frame_src) {|f| f.read.strip}
-	      		@frames[f.attr('name').to_sym] = Document.new(frame_body)
+	      		@frames[f.attr("name").to_sym] = Document.new(frame_body)
 	      	rescue
 	      		# puts "Could not load frame at #{frame_src}"
 	      	end

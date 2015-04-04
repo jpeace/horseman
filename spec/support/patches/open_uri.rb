@@ -1,8 +1,8 @@
-require 'open-uri'
+require "open-uri"
 
 class ExampleIO
   def read
-    'alert("downloaded");'
+    %{alert("downloaded");}
   end
 end
 
@@ -27,9 +27,9 @@ module OpenURI
   module OpenRead
     def open(*rest, &block)
       case host
-      when 'www.example.com'
+      when "www.example.com"
         yield ExampleIO.new if block_given?
-      when 'www.some-frame.com'
+      when "www.some-frame.com"
         yield FrameIO.new if block_given?
       end
     end

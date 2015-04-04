@@ -1,4 +1,4 @@
-require 'horseman/dom/document'
+require "horseman/dom/document"
 
 module Horseman
   class Response

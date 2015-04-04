@@ -1,7 +1,7 @@
 require "horseman/dom/document"
 
 describe Horseman::Dom::Document do
-	include Mocks
+	include Doubles
 	
 	subject { described_class.new(html) }
   
@@ -99,5 +99,4 @@ describe Horseman::Dom::Document do
       expect(subject.frames[:frame1].forms[:form1].fields.count).to eq 4
     end
   end
-
 end

@@ -1,6 +1,6 @@
 require "horseman/connection"
 
-module Mocks
+module Doubles
   def html
     %{
       <html>

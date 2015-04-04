@@ -1,4 +1,4 @@
-require 'horseman/dom/element'
+require "horseman/dom/element"
 
 module Horseman
 	module Dom

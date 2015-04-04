@@ -1,4 +1,4 @@
-require 'horseman/response'
+require "horseman/response"
 
 module Horseman
   class Action

@@ -1,7 +1,7 @@
 require "horseman/browser"
 
 describe Horseman::Browser::Browser do
-  include Mocks
+  include Doubles
   
   subject { described_class.new(connection, js_engine, "http://www.example.com")}
   

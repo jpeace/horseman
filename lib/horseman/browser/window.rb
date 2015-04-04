@@ -1,5 +1,5 @@
-require 'horseman/browser/output'
-require 'horseman/browser/location'
+require "horseman/browser/output"
+require "horseman/browser/location"
 
 module Horseman
 	module Browser
