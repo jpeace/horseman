@@ -1,2 +1,2 @@
-require 'horseman/browser'
-require 'horseman/version'
+require "horseman/browser"
+require "horseman/version"

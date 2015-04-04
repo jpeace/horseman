@@ -1,9 +1,9 @@
-require 'horseman/action'
-require 'horseman/connection'
-require 'horseman/cookies'
-require 'horseman/javascript_engine'
-require 'horseman/browser/window'
-require 'securerandom'
+require "horseman/action"
+require "horseman/connection"
+require "horseman/cookies"
+require "horseman/javascript_engine"
+require "horseman/browser/window"
+require "securerandom"
 
 module Horseman
   module Browser
@@ -19,7 +19,7 @@ module Horseman
       attr_reader :connection, :js_engine
       attr_reader :cookies, :last_action, :multipart_boundary
       
-      def initialize(connection, js_engine, base_url='', options={})
+      def initialize(connection, js_engine, base_url="", options={})
         @connection = connection
         @js_engine = js_engine
         @base_url = base_url
@@ -34,16 +34,15 @@ module Horseman
         @cookies.clear
       end
       
-      def get!(path = '/', options = {})
+      def get!(path = "/", options = {})
         url = options[:no_base_url] ? path : "#{@base_url}#{path}"
         request = @connection.build_request(:url => url, :verb => :get)
         redirects = options[:redirects] || 0
 
-        puts "GET: #{path}" if @verbose
         exec(request, redirects)
       end
       
-      def post!(path = '/', options = {})
+      def post!(path = "/", options = {})
         get! path
         
         form = options[:form] || :form
@@ -61,7 +60,7 @@ module Horseman
         if is_absolute_url?(selected_form.action)
           # Absolute action http://www.example.com/action
           url = selected_form.action
-        elsif selected_form.action == ''
+        elsif selected_form.action == ""
           # No action, post to same URL as GET request
           url = "#{@last_action.url}"
         else
@@ -70,37 +69,36 @@ module Horseman
         end
         
         request = @connection.build_request(:url => "#{url}", :verb => :post, :body => request_body)
-        request['Content-Type'] = case selected_form.encoding
+        request["Content-Type"] = case selected_form.encoding
                                   when :multipart
                                     "multipart/form-data; boundary=#{@multipart_boundary}"
                                   else
                                     "application/x-www-form-urlencoded"
                                   end
-        request['Referer'] = @last_action.url 
+        request["Referer"] = @last_action.url 
         
-        puts "POST: #{path}" if @verbose
         exec request
       end
       
       private
       
       def exec(request, redirects=0)
-        request['Cookie'] = @cookies.to_s
-        request['Content-Length'] = request.body ? request.body.length : 0
-        request['User-Agent'] = 'Horseman'
+        request["Cookie"] = @cookies.to_s
+        request["Content-Length"] = request.body ? request.body.length : 0
+        request["User-Agent"] = "Horseman"
         
         response = @connection.exec_request(request)
-        
-        @cookies.update(response.get_fields('set-cookie'))
+
+        @cookies.update(response.get_fields("set-cookie"))
         @last_action = Action.new(@connection.uri, response)
 
         code = response.code
         puts code if @verbose
         
-        if ['301','302','303','307'].include? code
+        if ["301", "302", "303", "307"].include? code
           raise "Redirect limit reached" if redirects >= MaxRedirects
           
-          redirect_url = response['location']
+          redirect_url = response["location"]
           if !is_absolute_url?(redirect_url)
             redirect_url = "#{@last_action.relative_root}#{redirect_url}"
           end

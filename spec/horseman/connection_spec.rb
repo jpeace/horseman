@@ -1,10 +1,10 @@
-require 'horseman/connection'
-require 'net/http'
+require "horseman/connection"
+require "net/http"
 
 describe Horseman::Connection do
   subject do
     c = described_class.new
-    c.url = 'http://www.example.com/some/path'
+    c.url = "http://www.example.com/some/path"
     c
   end
   
@@ -12,7 +12,7 @@ describe Horseman::Connection do
     let(:request) {subject.build_request(:verb => :get)}
     
     it "uses the proper path" do
-      request.path.should eq '/some/path'
+      request.path.should eq "/some/path"
     end
     
     context "using GET" do
@@ -32,7 +32,7 @@ describe Horseman::Connection do
         let(:request) {subject.build_request(:verb => :post, :body => "field1=value1&field2=value2")}
         
         it "properly sets request body" do
-          request.body.should eq 'field1=value1&field2=value2'
+          request.body.should eq "field1=value1&field2=value2"
         end
       end
 
@@ -46,19 +46,19 @@ describe Horseman::Connection do
   
   context "when accessed using http" do
     it "does not use SSL" do
-      subject.http.use_ssl?.should be_false
+      subject.http.use_ssl?.should be_falsey
     end
   end
   
   context "when accessed using https" do
     subject do
       c = described_class.new
-      c.url = 'https://www.example.com'
+      c.url = "https://www.example.com"
       c
     end
 
     it "uses SSL" do
-      subject.http.use_ssl?.should be_true
+      subject.http.use_ssl?.should be_truthy
     end
   end  
 end

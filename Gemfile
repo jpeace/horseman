@@ -1,6 +1,10 @@
-source :rubygems
+source "https://rubygems.org"
 
-gemspec
+gem "nokogiri"
+gem "therubyracer"
 
-gem "echoe", "~>4.6.3"
-gem "rspec", "~>2.7"
+group :development do
+  gem "rake"
+  gem "echoe"
+  gem "rspec"
+end

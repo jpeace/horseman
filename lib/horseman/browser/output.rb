@@ -6,7 +6,6 @@ module Horseman
 			end
 
       def error(message)
-        # $stderr.puts message
         puts message
       end
 		end

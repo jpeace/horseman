@@ -1,4 +1,4 @@
-require 'horseman/connection'
+require "horseman/connection"
 
 module Mocks
   def html
@@ -37,8 +37,8 @@ module Mocks
   end
   
   def cookies
-    ['name1=value1; Domain=www.example.com; Path=/path; Expires=Sun, 1-Jan-2012 00:00:00 GMT',
-     'name2=value2; Domain=www.example.com; Path=/path; Expires=Sun, 1-Jan-2012 00:00:00 GMT']
+    ["name1=value1; Domain=www.example.com; Path=/path; Expires=Sun, 1-Jan-2012 00:00:00 GMT",
+     "name2=value2; Domain=www.example.com; Path=/path; Expires=Sun, 1-Jan-2012 00:00:00 GMT"]
   end
   
   def request
@@ -51,19 +51,19 @@ module Mocks
   
   def response(options={})
     r = double("HttpResponse")
-    r.stub(:code) { '200' }
+    r.stub(:code) { "200" }
     r.stub(:[]) do |key|
       case key
-      when 'set-cookie'
-        cookies.join(', ')
-      when 'location'
-        options[:location] || 'http://www.anotherdomain.com/path'
+      when "set-cookie"
+        cookies.join(", ")
+      when "location"
+        options[:location] || "http://www.anotherdomain.com/path"
       end
     end
     r.stub(:to_hash) { Hash.new }
     r.stub(:get_fields) do |key|
       case key
-      when 'set-cookie'
+      when "set-cookie"
         cookies
       end
     end
